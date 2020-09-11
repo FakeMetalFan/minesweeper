@@ -7,22 +7,21 @@ import { FieldFactory } from 'view-models';
 import { Field } from 'components';
 
 export const Minesweeper = () => {
-  const [field] = useState(new FieldFactory(fieldType.BG));
+  const [field] = useState(new FieldFactory(fieldType.MD));
   const [fieldState, setFieldState] = useState([]);
-  const [isFieldStateComputed, setIsFieldStateComputed] = useState(false);
+  const [isInit, setIsInit] = useState(false);
 
   const handleCellClick = (cell, rowAddress, cellAddress) => {
-    if (isFieldStateComputed)
-      setFieldState(field.getStateWithRevealedCell(cell, rowAddress, cellAddress, fieldState));
+    if (isInit) setFieldState(field.getFloodFilledState(cell, rowAddress, cellAddress, fieldState));
     else {
-      setFieldState(field.getComputedState(rowAddress, cellAddress, fieldState));
-      setIsFieldStateComputed(true);
+      setFieldState(field.getInitialState(rowAddress, cellAddress, fieldState));
+      setIsInit(true);
     }
   };
 
   useEffect(() => {
-    setFieldState(field.getInitialState());
-    setIsFieldStateComputed(false);
+    setFieldState(field.getEmptyState());
+    setIsInit(false);
   }, [field]);
 
   return (<Field state={fieldState} cellClickHandler={handleCellClick} />);

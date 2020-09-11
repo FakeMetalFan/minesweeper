@@ -15,29 +15,56 @@ export class Field {
     this.minesCount = minesCount;
   }
 
-  getInitialState() {
+  getEmptyState() {
     return Array.from({ length: this.width }, () =>
       Array.from({ length: this.height }, () => new Cell()));
   }
 
-  getComputedState(excludedRowAddress, excludedCellAddress, state) {
+  getInitialState(excludedRowAddress, excludedCellAddress, state) {
+    return this.getFloodFilledState(
+      new Cell(cellValue.Empty, cellState.Visible),
+      excludedRowAddress,
+      excludedCellAddress,
+      this._getComputedState(excludedRowAddress, excludedCellAddress, state),
+    );
+  }
+
+  getFloodFilledState(cell, rowAddress, cellAddress, state) {
+    return produce(state, draft => {
+      draft[rowAddress][cellAddress] = new Cell(cell.value, cellState.Visible);
+
+      const floodFill = (target, targetRowAddress, targetCellAddress) => {
+        if (this._getUnderminedNeighborsCount(target, targetRowAddress, targetCellAddress, draft)) return;
+
+        for (let targetRowAddressOffset = -1; targetRowAddressOffset < 2; targetRowAddressOffset++)
+          for (let targetCellAddressOffset = -1; targetCellAddressOffset < 2; targetCellAddressOffset++)
+            if (targetRowAddressOffset || targetCellAddressOffset) {
+              const neighborRowAddress = targetRowAddress + targetRowAddressOffset;
+              const neighborCellAddress = targetCellAddress + targetCellAddressOffset;
+
+              const neighbor = draft[neighborRowAddress]?.[neighborCellAddress];
+
+              if (neighbor && !neighbor.isVisible && !neighbor.isUndermined) {
+                draft[neighborRowAddress][neighborCellAddress] = new Cell(neighbor.value, cellState.Visible);
+
+                floodFill(neighbor, neighborRowAddress, neighborCellAddress);
+              }
+            }
+      };
+
+      cell.isEmpty && floodFill(cell, rowAddress, cellAddress, draft);
+    });
+  }
+
+  _getComputedState(excludedRowAddress, excludedCellAddress, state) {
     return produce(this._getUnderminedState(excludedRowAddress, excludedCellAddress, state), draft => {
       draft.forEach((row, rowAddress) => {
         row.forEach((cell, cellAddress) => {
           !cell.isUndermined && (draft[rowAddress][cellAddress] =
-            this._getComputedCell(cell, rowAddress, cellAddress, draft)
+            new Cell(this._getUnderminedNeighborsCount(cell, rowAddress, cellAddress, draft))
           );
         });
       });
-
-      // TODO: must be flood filled!
-      draft[excludedRowAddress][excludedCellAddress] = new Cell(cellValue.Empty, cellState.Visible);
-    });
-  }
-
-  getStateWithRevealedCell({ value }, rowAddress, cellAddress, state) {
-    return produce(state, draft => {
-      draft[rowAddress][cellAddress] = new Cell(value, cellState.Visible);
     });
   }
 
@@ -62,22 +89,30 @@ export class Field {
   _getCellsAddresses(excludedRowAddress, excludedCellAddress, state) {
     return state.reduce((acc, row, rowAddress) => {
       row.forEach((_, cellAddress) => {
-        rowAddress !== excludedRowAddress && cellAddress !== excludedCellAddress
-          && acc.push([rowAddress, cellAddress]);
+        !((rowAddress === excludedRowAddress - 1 && cellAddress === excludedCellAddress - 1)
+          || (rowAddress === excludedRowAddress - 1 && cellAddress === excludedCellAddress)
+          || (rowAddress === excludedRowAddress - 1 && cellAddress === excludedCellAddress + 1)
+          || (rowAddress === excludedRowAddress && cellAddress === excludedCellAddress - 1)
+          || (rowAddress === excludedRowAddress && cellAddress === excludedCellAddress)
+          || (rowAddress === excludedRowAddress && cellAddress === excludedCellAddress + 1)
+          || (rowAddress === excludedRowAddress + 1 && cellAddress === excludedCellAddress - 1)
+          || (rowAddress === excludedRowAddress + 1 && cellAddress === excludedCellAddress)
+          || (rowAddress === excludedRowAddress + 1 && cellAddress === excludedCellAddress + 1)
+        ) && acc.push([rowAddress, cellAddress]);
       });
 
       return acc;
     }, []);
   }
 
-  _getComputedCell(cell, rowAddress, cellAddress, state) {
-    let value = 0;
+  _getUnderminedNeighborsCount(cell, rowAddress, cellAddress, state) {
+    let count = 0;
 
     for (let rowAddressOffset = -1; rowAddressOffset < 2; rowAddressOffset++)
       for (let cellAddressOffset = -1; cellAddressOffset < 2; cellAddressOffset++)
         (rowAddressOffset || cellAddressOffset)
-          && state[rowAddress + rowAddressOffset]?.[cellAddress + cellAddressOffset]?.isUndermined && value++;
+          && state[rowAddress + rowAddressOffset]?.[cellAddress + cellAddressOffset]?.isUndermined && count++;
 
-    return new Cell(value);
+    return count;
   }
 }

@@ -11,7 +11,7 @@ export const Field = ({ state, cellClickHandler }) => (
         <tr key={rowAddress}>
           {row.map((cell, cellAddress) =>
             <Cell
-              key={rowAddress + cellAddress}
+              key={cellAddress}
               clickHandler={() => { cellClickHandler(cell, rowAddress, cellAddress); }}
               state={cell}
             />
