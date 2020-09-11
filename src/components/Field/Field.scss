@@ -1,0 +1,8 @@
+// TODO: move into variables.scss
+$border: 1px solid black;
+
+table {
+  margin: 16px auto 0 auto;
+  border: $border;
+  border-collapse: collapse;
+}

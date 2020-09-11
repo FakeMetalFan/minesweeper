@@ -1,0 +1,68 @@
+// TODO: move into variables.scss
+$border: 1px solid black;
+$cell-dimension: 24px;
+
+td {
+  width: $cell-dimension;
+  height: $cell-dimension;
+  border: $border;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.hidden {
+  background-color: #bdbdbd;
+}
+
+.visible {
+  background-color: #fff;
+
+  &__mine {}
+
+  &__busted-mine {
+    background-image: url(~img/mine.ico);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 85%;
+  }
+
+  &__flag {}
+
+  &__question-mark {}
+
+  &__empty {}
+
+  &__1 {
+    color: blue;
+  }
+
+  &__2 {
+    color: green;
+  }
+
+  &__3 {
+    color: red;
+  }
+
+  &__4 {
+    color: purple;
+  }
+
+  &__5 {
+    color: maroon;
+  }
+
+  &__6 {
+    color: turquoise;
+  }
+
+  &__7 {
+    color: black;
+  }
+
+  &__8 {
+    color: gray;
+  }
+}
