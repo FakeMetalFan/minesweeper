@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from 'react';
 
-import { fieldType } from 'const';
+import { Field } from 'components/Field/Field';
 
-import { FieldFactory } from 'view-models';
+import { FieldStateProducerFactory } from 'view-models/field-state-producer-factory';
 
-import { Field } from 'components';
+import { fieldStateProducerType } from 'const';
 
 export const Minesweeper = () => {
-  const [field] = useState(new FieldFactory(fieldType.MD));
+  const [fieldStateProducer] = useState(new FieldStateProducerFactory(fieldStateProducerType.BG));
   const [fieldState, setFieldState] = useState([]);
   const [isInit, setIsInit] = useState(false);
 
-  const handleCellClick = (cell, rowAddress, cellAddress) => {
-    if (isInit) setFieldState(field.getFloodFilledState(cell, rowAddress, cellAddress, fieldState));
+  const handleCellClick = (cell, address) => {
+    if (isInit) setFieldState(fieldStateProducer.getFloodFilledState(fieldState, cell, address));
     else {
-      setFieldState(field.getInitialState(rowAddress, cellAddress, fieldState));
+      setFieldState(fieldStateProducer.getInitialState(fieldState, cell, address));
       setIsInit(true);
     }
   };
 
   useEffect(() => {
-    setFieldState(field.getEmptyState());
+    setFieldState(fieldStateProducer.getEmptyState());
     setIsInit(false);
-  }, [field]);
+  }, [fieldStateProducer]);
 
-  return (<Field state={fieldState} cellClickHandler={handleCellClick} />);
+  return (<Field columnsCount={fieldStateProducer.width} state={fieldState} cellClickHandler={handleCellClick} />);
 };

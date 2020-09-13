@@ -1,23 +1,14 @@
 import React from 'react';
 
+import { Cell } from '../Cell/Cell';
 import './Field.scss';
 
-import { Cell } from '../Cell/Cell';
-
-export const Field = ({ state, cellClickHandler }) => (
-  <table>
-    <tbody>
-      {state.map((row, rowAddress) =>
-        <tr key={rowAddress}>
-          {row.map((cell, cellAddress) =>
-            <Cell
-              key={cellAddress}
-              clickHandler={() => { cellClickHandler(cell, rowAddress, cellAddress); }}
-              state={cell}
-            />
-          )}
-        </tr>
-      )}
-    </tbody>
-  </table>
+export const Field = ({ columnsCount, state, cellClickHandler }) => (
+  <div className='field' style={{gridTemplateColumns: `repeat(${columnsCount}, 1fr)`}}>
+    {state.map((cellState, address) => <Cell
+      key={address}
+      state={cellState}
+      clickHandler={() => {cellClickHandler(cellState, address);}}
+    />)}
+  </div>
 );
