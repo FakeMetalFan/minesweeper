@@ -20,15 +20,27 @@ export class CellNeighborsUtils {
           const rowAddressWithOffset = rowAddress + rowAddressOffset;
           const cellAddressWithOffset = cellAddress + cellAddressOffset;
 
-          -1 < rowAddressWithOffset && rowAddressWithOffset < this._fieldWidth
-            && -1 < cellAddressWithOffset && cellAddressWithOffset < this._fieldHeight
+          this._doesAddressExist(rowAddressWithOffset, this._fieldWidth)
+            && this._doesAddressExist(cellAddressWithOffset, this._fieldHeight)
               && addresses.push(this._cellAddressUtils.to1DAddress(rowAddressWithOffset, cellAddressWithOffset));
         }
 
     return addresses;
   }
 
-  countUnderminedNeighbors(state, address) {
-    return this.getNeighborsAddresses(address).reduce((acc, addr) => state[addr].isUndermined ? acc + 1 : acc, 0);
+  countMinedNeighbors(state, address) {
+    return this.getNeighborsAddresses(address).reduce((acc, addr) => state[addr].isMined ? acc + 1 : acc, 0);
+  }
+
+  isMinedNeighborsRevealed(state, address) {
+    return this.countMinedNeighbors(state, address) <= this._countFlaggedNeighbors(state, address);
+  }
+
+  _countFlaggedNeighbors(state, address) {
+    return this.getNeighborsAddresses(address).reduce((acc, addr) => state[addr].isFlagged ? acc + 1 : acc, 0);
+  }
+
+  _doesAddressExist(address, criteria) {
+    return -1 < address && address < criteria;
   }
 }

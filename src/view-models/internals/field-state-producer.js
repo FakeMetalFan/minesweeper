@@ -3,9 +3,9 @@ import produce from 'immer';
 import difference from 'ramda/src/difference';
 import range from 'ramda/src/range';
 
-import { cellValue, cellVisibility } from 'const';
+import { cellValue, cellState } from 'const';
 
-import { CellState } from './cell-state';
+import { Cell } from './cell';
 import { CellNeighborsUtils } from './cell-neighbors-utils';
 
 export class FieldStateProducer {
@@ -22,47 +22,57 @@ export class FieldStateProducer {
   }
 
   getEmptyState() {
-    return Array.from({ length: this._length }, () => new CellState());
+    return Array.from({ length: this._length }, () => new Cell());
   }
 
   getInitialState(state, cell, excludedAddress) {
     return this.getFloodFilledState(this._getComputedState(state, excludedAddress), cell, excludedAddress);
   }
 
-  getFloodFilledState(state, cell, address) {
+  getFloodFilledState(state, { value, isEmpty }, cellAddress) {
     return produce(state, draft => {
-      draft[address] = new CellState(cell.value, cellVisibility.Visible);
+      draft[cellAddress] = new Cell(value, cellState.Visible);
 
-      const floodFill = (target, targetAddress) => {
-        if (!this._cellNeighborsUtils.countUnderminedNeighbors(draft, targetAddress))
-          this._cellNeighborsUtils.getNeighborsAddresses(targetAddress).forEach(addr => {
-            const neighbor = draft[addr];
+      const floodFill = neighborAddress => {
+        if (!this._cellNeighborsUtils.countMinedNeighbors(draft, neighborAddress))
+          this._cellNeighborsUtils.getNeighborsAddresses(neighborAddress).forEach(address => {
+            const { isMined, isHidden, isFlagged, value: neighborValue } = draft[address];
 
-            if (neighbor.isNotUndermined && neighbor.isHidden) {
-              draft[addr] = new CellState(neighbor.value, cellVisibility.Visible);
+            if (!isMined && isHidden && !isFlagged) {
+              draft[address] = new Cell(neighborValue, cellState.Visible);
 
-              floodFill(neighbor, addr);
+              floodFill(address);
             }
           });
       };
 
-      cell.isEmpty && floodFill(cell, address);
+      isEmpty && floodFill(cellAddress);
     });
   }
 
+  getFlaggedState(state, { value, isFlagged }, address) {
+    return produce(state, draft => {
+      draft[address] = new Cell(value, cellState[isFlagged ? 'Hidden' : 'Flagged']);
+    });
+  }
+
+  getNeighborsRevealedState(state, cell, address) {
+    return []
+  }
+
   _getComputedState(state, excludedAddress) {
-    return produce(this._getUnderminedState(state, excludedAddress), draft => {
-      draft.forEach((cell, addr) => {
-        cell.isNotUndermined
-          && (draft[addr] = new CellState(this._cellNeighborsUtils.countUnderminedNeighbors(draft, addr)));
+    return produce(this._getMinedState(state, excludedAddress), draft => {
+      draft.forEach(({ isMined, state: cellState }, address) => {
+        !isMined
+          && (draft[address] = new Cell(this._cellNeighborsUtils.countMinedNeighbors(draft, address), cellState));
       });
     });
   }
 
-  _getUnderminedState(state, excludedAddress) {
+  _getMinedState(state, excludedAddress) {
     return produce(state, draft => {
-      this._getRandomAddresses(excludedAddress).forEach(addr=> {
-        draft[addr] = new CellState(cellValue.Mine);
+      this._getRandomAddresses(excludedAddress).forEach(address => {
+        draft[address] = new Cell(cellValue.Mine, draft[address].state);
       });
     });
   }

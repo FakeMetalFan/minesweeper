@@ -1,14 +1,30 @@
 import React from 'react';
 
-import { Cell } from '../Cell/Cell';
+import { FieldCellFactory } from '../';
 import './Field.scss';
 
-export const Field = ({ columnsCount, state, cellClickHandler }) => (
+export const Field = ({
+  columnsCount,
+  state,
+  cellRevealHandler,
+  flagPlantingHandler,
+  handleNeighborsReveal,
+}) => (
   <div className='field' style={{gridTemplateColumns: `repeat(${columnsCount}, 1fr)`}}>
-    {state.map((cellState, address) => <Cell
+    {state.map((cellState, address) => <FieldCellFactory
       key={address}
       state={cellState}
-      clickHandler={() => {cellClickHandler(cellState, address);}}
+      cellRevealHandler={() => {
+        cellRevealHandler(cellState, address);
+      }}
+      flagPlantingHandler={event => {
+        event.preventDefault();
+
+        flagPlantingHandler(cellState, address);
+      }}
+      handleNeighborsReveal={() => {
+        handleNeighborsReveal(cellState, address);
+      }}
     />)}
   </div>
 );

@@ -8,28 +8,24 @@ $cell-dimension: 24px;
   font-weight: bold;
   font-size: 18px;
   cursor: pointer;
+  background-color: #bdbdbd;
 
-  &__hidden {
-    background-color: #bdbdbd;
+  &__mine {
+    background-image: url(~img/mine.ico);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 85%;
+  }
+
+  &__flag {
+    background-image: url(~img/flag.ico);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 85%;
   }
 
   &__visible {
     background-color: #fff;
-
-    &__mine {}
-
-    &__busted-mine {
-      background-image: url(~img/mine.ico);
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: 85%;
-    }
-
-    &__flag {}
-
-    &__question-mark {}
-
-    &__empty {}
 
     &__1 {
       color: blue;
