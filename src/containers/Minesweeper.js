@@ -7,7 +7,7 @@ import { FieldStateProducerFactory } from 'view-models/field-state-producer-fact
 import { fieldStateProducerType } from 'const';
 
 export const Minesweeper = () => {
-  const [fieldStateProducer] = useState(new FieldStateProducerFactory(fieldStateProducerType.SM));
+  const [fieldStateProducer] = useState(new FieldStateProducerFactory(fieldStateProducerType.BG));
   const [fieldState, setFieldState] = useState(fieldStateProducer.getEmptyState());
 
   const handleCellReveal = (cell, address) => {
@@ -18,8 +18,8 @@ export const Minesweeper = () => {
     setFieldState(fieldStateProducer.getFlagPlantedState(fieldState, cell, address));
   };
 
-  const handleNeighborsReveal = (cell, address) => {
-    setFieldState(fieldStateProducer.getNeighborsRevealedState(fieldState, cell, address));
+  const handleNeighborsReveal = address => {
+    setFieldState(fieldStateProducer.getNeighborsRevealedState(fieldState, address));
   };
 
   return (<Field

@@ -25,6 +25,8 @@ export const FieldCellFactory = ({
 
   if (state.isIncorrectGuess) return (<button className='cell cell__incorrect-guess' />)
 
+  if (state.isBustedMine) return (<button className='cell cell__busted-mine' />);
+
   return (<button
     className={`cell cell__visible cell__visible__${state.value}`}
     onClick={handleNeighborsReveal}

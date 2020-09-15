@@ -23,7 +23,7 @@ export const Field = ({
         flagPlantingHandler(cellState, address);
       }}
       handleNeighborsReveal={() => {
-        handleNeighborsReveal(cellState, address);
+        handleNeighborsReveal(address);
       }}
     />)}
   </div>

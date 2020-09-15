@@ -30,6 +30,10 @@ $cell-dimension: 24px;
   outline: none;
 
   &__mine {
+    @include background-img('~img/mine2.ico');
+  }
+
+  &__busted-mine {
     background-color: red;
 
     @include background-img('~img/mine2.ico');

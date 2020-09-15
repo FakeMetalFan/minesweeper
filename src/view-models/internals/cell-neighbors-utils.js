@@ -10,6 +10,14 @@ export class CellNeighborsUtils {
     this._cellAddressUtils = new CellAddressUtils(fieldWidth);
   }
 
+  isFloodFillAble(state, address) {
+    return !this.getNeighborsAddresses(address).some(addr => {
+      const { isMined, isFlagged } = state[addr];
+
+      return (isMined && !isFlagged) || (!isMined && isFlagged);
+    });
+  }
+
   getNeighborsAddresses(address) {
     const [rowAddress, cellAddress] = this._cellAddressUtils.to2DAddresses(address);
     const addresses = [];
@@ -21,21 +29,11 @@ export class CellNeighborsUtils {
           const cellAddressWithOffset = cellAddress + cellAddressOffset;
 
           this._doesAddressExist(rowAddressWithOffset, this._fieldWidth)
-            && this._doesAddressExist(cellAddressWithOffset, this._fieldHeight)
-              && addresses.push(this._cellAddressUtils.to1DAddress(rowAddressWithOffset, cellAddressWithOffset));
+          && this._doesAddressExist(cellAddressWithOffset, this._fieldHeight)
+          && addresses.push(this._cellAddressUtils.to1DAddress(rowAddressWithOffset, cellAddressWithOffset));
         }
 
     return addresses;
-  }
-
-  isFloodFillAble(state, address) {
-    for (const addr of this.getNeighborsAddresses(address)) {
-      const { isMined, isFlagged } = state[addr];
-
-      if ((isMined && !isFlagged) || (!isMined && isFlagged)) return false;
-    }
-
-    return true;
   }
 
   countMinedNeighbors(state, address) {

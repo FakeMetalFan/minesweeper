@@ -17,6 +17,10 @@ export class Cell {
     return this.value === cellValue.Mine;
   }
 
+  get isBustedMine() {
+    return this.value === cellValue.BustedMine;
+  }
+
   get isIncorrectGuess() {
     return this.value === cellValue.IncorrectGuess;
   }
@@ -31,5 +35,9 @@ export class Cell {
 
   get isFlagged() {
     return this.state === cellState.Flagged;
+  }
+
+  get isFloodFillAble() {
+    return !this.isMined && this.isHidden && !this.isFlagged;
   }
 }
