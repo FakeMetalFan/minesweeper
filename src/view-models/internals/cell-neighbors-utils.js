@@ -28,16 +28,26 @@ export class CellNeighborsUtils {
     return addresses;
   }
 
+  isFloodFillAble(state, address) {
+    for (const addr of this.getNeighborsAddresses(address)) {
+      const { isMined, isFlagged } = state[addr];
+
+      if ((isMined && !isFlagged) || (!isMined && isFlagged)) return false;
+    }
+
+    return true;
+  }
+
   countMinedNeighbors(state, address) {
-    return this.getNeighborsAddresses(address).reduce((acc, addr) => state[addr].isMined ? acc + 1 : acc, 0);
+    return this._countNeighborsBy(state, address, 'isMined');
   }
 
-  isMinedNeighborsRevealed(state, address) {
-    return this.countMinedNeighbors(state, address) <= this._countFlaggedNeighbors(state, address);
+  shouldRevealNeighbors(state, address) {
+    return this.countMinedNeighbors(state, address) === this._countNeighborsBy(state, address, 'isFlagged');
   }
 
-  _countFlaggedNeighbors(state, address) {
-    return this.getNeighborsAddresses(address).reduce((acc, addr) => state[addr].isFlagged ? acc + 1 : acc, 0);
+  _countNeighborsBy(state, address, propName) {
+    return this.getNeighborsAddresses(address).reduce((acc, addr) => state[addr][propName] ? acc + 1: acc, 0);
   }
 
   _doesAddressExist(address, criteria) {

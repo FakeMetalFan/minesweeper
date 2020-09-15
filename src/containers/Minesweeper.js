@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Field } from 'components';
 
@@ -8,29 +8,19 @@ import { fieldStateProducerType } from 'const';
 
 export const Minesweeper = () => {
   const [fieldStateProducer] = useState(new FieldStateProducerFactory(fieldStateProducerType.SM));
-  const [fieldState, setFieldState] = useState([]);
-  const [isInit, setIsInit] = useState(false);
+  const [fieldState, setFieldState] = useState(fieldStateProducer.getEmptyState());
 
   const handleCellReveal = (cell, address) => {
-    if (isInit) setFieldState(fieldStateProducer.getFloodFilledState(fieldState, cell, address));
-    else {
-      setFieldState(fieldStateProducer.getInitialState(fieldState, cell, address));
-      setIsInit(true);
-    }
+    setFieldState(fieldStateProducer.getState(fieldState, cell, address));
   };
 
   const handleFlagPlanting = (cell, address) => {
-    setFieldState(fieldStateProducer.getFlaggedState(fieldState, cell, address));
+    setFieldState(fieldStateProducer.getFlagPlantedState(fieldState, cell, address));
   };
 
   const handleNeighborsReveal = (cell, address) => {
-    // setFieldState(fieldStateProducer.getNeighborsRevealedState(fieldState, cell, address));
+    setFieldState(fieldStateProducer.getNeighborsRevealedState(fieldState, cell, address));
   };
-
-  useEffect(() => {
-    setFieldState(fieldStateProducer.getEmptyState());
-    setIsInit(false);
-  }, [fieldStateProducer]);
 
   return (<Field
     columnsCount={fieldStateProducer.width}

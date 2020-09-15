@@ -1,4 +1,5 @@
 export const cellValue = {
+  IncorrectGuess: -2,
   Mine: -1,
   Empty: 0,
   One: 1,

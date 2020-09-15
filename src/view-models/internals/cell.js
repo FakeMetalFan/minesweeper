@@ -1,6 +1,10 @@
+import { immerable } from 'immer';
+
 import { cellValue, cellState } from 'const';
 
 export class Cell {
+  [immerable] = true;
+
   constructor(
     value = cellValue.Empty,
     state = cellState.Hidden
@@ -11,6 +15,10 @@ export class Cell {
 
   get isMined() {
     return this.value === cellValue.Mine;
+  }
+
+  get isIncorrectGuess() {
+    return this.value === cellValue.IncorrectGuess;
   }
 
   get isEmpty() {

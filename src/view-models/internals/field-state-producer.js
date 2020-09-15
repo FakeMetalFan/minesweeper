@@ -9,6 +9,8 @@ import { Cell } from './cell';
 import { CellNeighborsUtils } from './cell-neighbors-utils';
 
 export class FieldStateProducer {
+  _isInit = false;
+
   constructor(
     width,
     height,
@@ -25,46 +27,67 @@ export class FieldStateProducer {
     return Array.from({ length: this._length }, () => new Cell());
   }
 
-  getInitialState(state, cell, excludedAddress) {
-    return this.getFloodFilledState(this._getComputedState(state, excludedAddress), cell, excludedAddress);
+  getState(state, cell, address) {
+    if (this._isInit) return this._getFloodFilledState(state, cell, address);
+
+    this._isInit = true;
+
+    return this._getInitialState(state, cell, address);
   }
 
-  getFloodFilledState(state, { value, isEmpty }, cellAddress) {
+  getFlagPlantedState(state, { isFlagged }, address) {
     return produce(state, draft => {
-      draft[cellAddress] = new Cell(value, cellState.Visible);
-
-      const floodFill = neighborAddress => {
-        if (!this._cellNeighborsUtils.countMinedNeighbors(draft, neighborAddress))
-          this._cellNeighborsUtils.getNeighborsAddresses(neighborAddress).forEach(address => {
-            const { isMined, isHidden, isFlagged, value: neighborValue } = draft[address];
-
-            if (!isMined && isHidden && !isFlagged) {
-              draft[address] = new Cell(neighborValue, cellState.Visible);
-
-              floodFill(address);
-            }
-          });
-      };
-
-      isEmpty && floodFill(cellAddress);
-    });
-  }
-
-  getFlaggedState(state, { value, isFlagged }, address) {
-    return produce(state, draft => {
-      draft[address] = new Cell(value, cellState[isFlagged ? 'Hidden' : 'Flagged']);
+      draft[address].state = cellState[isFlagged ? 'Hidden' : 'Flagged'];
     });
   }
 
   getNeighborsRevealedState(state, cell, address) {
-    return []
+    if (this._cellNeighborsUtils.isFloodFillAble(state, address))
+      return this._getFloodFilledState(state, cell, address);
+
+    return produce(state, draft => {
+      this._cellNeighborsUtils.shouldRevealNeighbors(draft, address)
+        && this._cellNeighborsUtils.getNeighborsAddresses(address).forEach(addr => {
+          const cell = draft[addr];
+
+          const { isMined, isFlagged } = cell;
+
+          !isMined && isFlagged && (cell.value = cellValue.IncorrectGuess);
+
+          cell.state = cellState.Visible;
+        });
+    });
+  }
+
+  _getInitialState(state, cell, excludedAddress) {
+    return this._getFloodFilledState(this._getComputedState(state, excludedAddress), cell, excludedAddress);
+  }
+
+  _getFloodFilledState(state, { isMined }, cellAddress) {
+    return produce(state, draft => {
+      draft[cellAddress].state = cellState.Visible;
+
+      const floodFill = neighborAddress => {
+        this._cellNeighborsUtils.isFloodFillAble(draft, neighborAddress)
+          && this._cellNeighborsUtils.getNeighborsAddresses(neighborAddress).forEach(address => {
+            const { isMined, isHidden, isFlagged } = draft[address];
+
+            if (!isMined && isHidden && !isFlagged) {
+              draft[address].state = cellState.Visible;
+
+              floodFill(address);
+            }
+        });
+      };
+
+      !isMined && floodFill(cellAddress);
+    });
   }
 
   _getComputedState(state, excludedAddress) {
     return produce(this._getMinedState(state, excludedAddress), draft => {
-      draft.forEach(({ isMined, state: cellState }, address) => {
-        !isMined
-          && (draft[address] = new Cell(this._cellNeighborsUtils.countMinedNeighbors(draft, address), cellState));
+      draft.forEach(({ isMined }, address) => {
+        !isMined && (draft[address].value = this._cellNeighborsUtils.countMinedNeighbors(draft, address));
       });
     });
   }
@@ -72,7 +95,7 @@ export class FieldStateProducer {
   _getMinedState(state, excludedAddress) {
     return produce(state, draft => {
       this._getRandomAddresses(excludedAddress).forEach(address => {
-        draft[address] = new Cell(cellValue.Mine, draft[address].state);
+        draft[address].value = cellValue.Mine;
       });
     });
   }
