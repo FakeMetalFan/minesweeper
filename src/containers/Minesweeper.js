@@ -6,8 +6,10 @@ import { FieldStateProducerFactory } from 'view-models/field-state-producer-fact
 
 import { fieldStateProducerType } from 'const';
 
+import { useDidUpdate } from 'hooks/use-did-update';
+
 export const Minesweeper = () => {
-  const [fieldStateProducer] = useState(new FieldStateProducerFactory(fieldStateProducerType.BG));
+  const [fieldStateProducer] = useState(new FieldStateProducerFactory(fieldStateProducerType.SM));
   const [fieldState, setFieldState] = useState(fieldStateProducer.getEmptyState());
 
   const handleCellReveal = (cell, address) => {
@@ -22,11 +24,15 @@ export const Minesweeper = () => {
     setFieldState(fieldStateProducer.getNeighborsRevealedState(fieldState, address));
   };
 
+  useDidUpdate(() => {
+    console.log('you are fucking busted!');
+  }, fieldStateProducer.isBust);
+
   return (<Field
     columnsCount={fieldStateProducer.width}
     state={fieldState}
     cellRevealHandler={handleCellReveal}
     flagPlantingHandler={handleFlagPlanting}
-    handleNeighborsReveal={handleNeighborsReveal}
+    neighborsRevealHandler={handleNeighborsReveal}
   />);
 };

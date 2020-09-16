@@ -8,9 +8,15 @@ export const Field = ({
   state,
   cellRevealHandler,
   flagPlantingHandler,
-  handleNeighborsReveal,
+  neighborsRevealHandler,
 }) => (
-  <div className='field' style={{gridTemplateColumns: `repeat(${columnsCount}, 1fr)`}}>
+  <div
+    className='field'
+    style={{gridTemplateColumns: `repeat(${columnsCount}, 1fr)`}}
+    onContextMenu={event => {
+      event.preventDefault();
+    }}
+  >
     {state.map((cellState, address) => <FieldCellFactory
       key={address}
       state={cellState}
@@ -22,8 +28,16 @@ export const Field = ({
 
         flagPlantingHandler(cellState, address);
       }}
-      handleNeighborsReveal={() => {
-        handleNeighborsReveal(address);
+      neighborsRevealHandler={({ target, nativeEvent }) => {
+        const { which } = nativeEvent;
+
+        const mouseupHandler = event => {
+          which !== event.which && neighborsRevealHandler(address);
+
+          target.removeEventListener('mouseup', mouseupHandler);
+        };
+
+        target.addEventListener('mouseup', mouseupHandler);
       }}
     />)}
   </div>

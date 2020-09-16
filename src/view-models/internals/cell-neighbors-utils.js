@@ -14,7 +14,7 @@ export class CellNeighborsUtils {
     return !this.getNeighborsAddresses(address).some(addr => {
       const { isMined, isFlagged } = state[addr];
 
-      return (isMined && !isFlagged) || (!isMined && isFlagged);
+      return isMined && !isFlagged;
     });
   }
 
@@ -29,8 +29,8 @@ export class CellNeighborsUtils {
           const cellAddressWithOffset = cellAddress + cellAddressOffset;
 
           this._doesAddressExist(rowAddressWithOffset, this._fieldWidth)
-          && this._doesAddressExist(cellAddressWithOffset, this._fieldHeight)
-          && addresses.push(this._cellAddressUtils.to1DAddress(rowAddressWithOffset, cellAddressWithOffset));
+            && this._doesAddressExist(cellAddressWithOffset, this._fieldHeight)
+              && addresses.push(this._cellAddressUtils.to1DAddress(rowAddressWithOffset, cellAddressWithOffset));
         }
 
     return addresses;
