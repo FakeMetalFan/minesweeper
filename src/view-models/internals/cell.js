@@ -40,4 +40,12 @@ export class Cell {
   get isFloodFillAble() {
     return !this.isMined && this.isHidden && !this.isFlagged;
   }
+
+  get isMisplacedFlag() {
+    return !this.isMined && this.isFlagged;
+  }
+
+  get isUnrevealedMine() {
+    return this.isMined && !this.isFlagged;
+  }
 }

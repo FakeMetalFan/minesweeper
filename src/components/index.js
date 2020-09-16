@@ -1,2 +1,2 @@
-export * from './FieldCellFactory/FieldCellFactory';
+export * from './CellFactory/CellFactory';
 export * from './Field/Field'

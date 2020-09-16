@@ -1,32 +1,22 @@
 import React from 'react';
 
-import { FieldCellFactory } from '../';
+import { CellFactory } from '../';
 import './Field.scss';
 
-export const Field = ({
-  columnsCount,
-  state,
-  cellRevealHandler,
-  flagPlantingHandler,
-  neighborsRevealHandler,
-}) => (
+export const Field = ({ columnsCount, state, cellRevealHandler, flagPlantingHandler, neighborsRevealHandler }) => (
   <div
     className='field'
     style={{gridTemplateColumns: `repeat(${columnsCount}, 1fr)`}}
-    onContextMenu={event => {
-      event.preventDefault();
-    }}
+    onContextMenu={event => {event.preventDefault();}}
   >
-    {state.map((cellState, address) => <FieldCellFactory
+    {state.map((cell, address) => <CellFactory
       key={address}
-      state={cellState}
-      cellRevealHandler={() => {
-        cellRevealHandler(cellState, address);
-      }}
+      state={cell}
+      cellRevealHandler={() => {cellRevealHandler(cell, address);}}
       flagPlantingHandler={event => {
         event.preventDefault();
 
-        flagPlantingHandler(cellState, address);
+        flagPlantingHandler(cell, address);
       }}
       neighborsRevealHandler={({ target, nativeEvent }) => {
         const { which } = nativeEvent;

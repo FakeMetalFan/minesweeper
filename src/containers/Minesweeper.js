@@ -2,35 +2,35 @@ import React, { useState } from 'react';
 
 import { Field } from 'components';
 
-import { FieldStateProducerFactory } from 'view-models/field-state-producer-factory';
+import { FieldProducerFactory } from 'view-models/field-producer-factory';
 
-import { fieldStateProducerType } from 'const';
+import { fieldProducerType } from 'const';
 
 import { useDidUpdate } from 'hooks/use-did-update';
 
 export const Minesweeper = () => {
-  const [fieldStateProducer] = useState(new FieldStateProducerFactory(fieldStateProducerType.SM));
-  const [fieldState, setFieldState] = useState(fieldStateProducer.getEmptyState());
+  const [fieldProducer] = useState(new FieldProducerFactory(fieldProducerType.SM));
+  const [field, setField] = useState(fieldProducer.getEmptyState());
 
   const handleCellReveal = (cell, address) => {
-    setFieldState(fieldStateProducer.getState(fieldState, cell, address));
+    setField(fieldProducer.getState(field, cell, address));
   };
 
   const handleFlagPlanting = (cell, address) => {
-    setFieldState(fieldStateProducer.getFlagPlantedState(fieldState, cell, address));
+    setField(fieldProducer.getFlagPlantedState(field, cell, address));
   };
 
   const handleNeighborsReveal = address => {
-    setFieldState(fieldStateProducer.getNeighborsRevealedState(fieldState, address));
+    setField(fieldProducer.getNeighborsRevealedState(field, address));
   };
 
   useDidUpdate(() => {
     console.log('you are fucking busted!');
-  }, fieldStateProducer.isBust);
+  }, fieldProducer.isBust);
 
   return (<Field
-    columnsCount={fieldStateProducer.width}
-    state={fieldState}
+    columnsCount={fieldProducer.width}
+    state={field}
     cellRevealHandler={handleCellReveal}
     flagPlantingHandler={handleFlagPlanting}
     neighborsRevealHandler={handleNeighborsReveal}

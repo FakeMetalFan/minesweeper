@@ -1,14 +1,15 @@
 import produce from 'immer';
 
-import difference from 'ramda/src/difference';
-import range from 'ramda/src/range';
+import cloneDeep from 'lodash/cloneDeep';
+import range from 'lodash/range';
+import difference from 'lodash/difference';
 
 import { cellValue, cellState } from 'const';
 
 import { Cell } from './cell';
 import { CellNeighborsUtils } from './cell-neighbors-utils';
 
-export class FieldStateProducer {
+export class FieldProducer {
   isBust = false;
 
   _isInit = false;
@@ -61,28 +62,11 @@ export class FieldStateProducer {
       return this._getBustedNeighborsState(state, addr);
     }
 
-    return state;
+    return cloneDeep(state);
   }
 
   _getInitialState(state, excludedAddress) {
     return this._getFloodFilledState(this._getComputedState(state, excludedAddress), excludedAddress);
-  }
-
-  _getBustedState(state, address) {
-    return this._getBustedCellsState(produce(state, draft => {
-      draft[address] = new Cell(cellValue.BustedMine, cellState.Visible);
-    }));
-  }
-
-  _getBustedCellsState(state) {
-    return produce(state, draft => {
-      draft.forEach((cell, addr) => {
-        const { isMined, isFlagged } = cell;
-
-        isMined && !isFlagged && (cell.state = cellState.Visible);
-        !isMined && isFlagged && (draft[addr] = new Cell(cellValue.IncorrectGuess, cellState.Visible));
-      });
-    });
   }
 
   _getCellRevealedState(state, address) {
@@ -91,18 +75,24 @@ export class FieldStateProducer {
     });
   }
 
+  _getBustedState(state, address) {
+    return this._getBustedCellsState(produce(state, draft => {
+      draft[address] = new Cell(cellValue.BustedMine, cellState.Visible);
+    }));
+  }
+
   _getFloodFilledState(state, address) {
     return produce(state, draft => {
       const floodFill = neighborAddr => {
         this._cellNeighborsUtils.isFloodFillAble(draft, neighborAddr)
-          && this._cellNeighborsUtils.getNeighborsAddresses(neighborAddr).forEach(addr => {
-            const cell = draft[addr];
+        && this._cellNeighborsUtils.getNeighborsAddresses(neighborAddr).forEach(addr => {
+          const cell = draft[addr];
 
-            if (cell.isFloodFillAble) {
-              cell.state = cellState.Visible;
+          if (cell.isFloodFillAble) {
+            cell.state = cellState.Visible;
 
-              floodFill(addr);
-            }
+            floodFill(addr);
+          }
         });
       };
 
@@ -110,10 +100,35 @@ export class FieldStateProducer {
     });
   }
 
+  _getBustedNeighborsState(state, address) {
+    return this._getBustedCellsState(produce(state, draft => {
+      this._cellNeighborsUtils.getNeighborsAddresses(address).forEach(addr => {
+        const cell = draft[addr];
+        const { isUnrevealedMine, isMisplacedFlag } = cell;
+
+        isUnrevealedMine && (cell.value = cellValue.BustedMine);
+        isMisplacedFlag && (cell.value = cellValue.IncorrectGuess);
+
+        cell.state = cellState.Visible;
+      });
+    }));
+  }
+
   _getComputedState(state, excludedAddress) {
     return produce(this._getMinedState(state, excludedAddress), draft => {
       draft.forEach((cell, addr) => {
         !cell.isMined && (cell.value = this._cellNeighborsUtils.countMinedNeighbors(draft, addr));
+      });
+    });
+  }
+
+  _getBustedCellsState(state) {
+    return produce(state, draft => {
+      draft.forEach((cell, addr) => {
+        const { isUnrevealedMine, isMisplacedFlag } = cell;
+
+        isUnrevealedMine && (cell.state = cellState.Visible);
+        isMisplacedFlag && (draft[addr] = new Cell(cellValue.IncorrectGuess, cellState.Visible));
       });
     });
   }
@@ -128,7 +143,7 @@ export class FieldStateProducer {
 
   _getRandomAddresses(excludedAddress) {
     const addresses = difference(
-      range(0, this._length),
+      range(this._length),
       [excludedAddress, ...this._cellNeighborsUtils.getNeighborsAddresses(excludedAddress)]
     );
 
@@ -138,20 +153,6 @@ export class FieldStateProducer {
       randomAddresses.add(addresses[Math.random() * addresses.length | 0]);
 
     return [...randomAddresses];
-  }
-
-  _getBustedNeighborsState(state, address) {
-    return this._getBustedCellsState(produce(state, draft => {
-      this._cellNeighborsUtils.getNeighborsAddresses(address).forEach(addr => {
-        const cell = draft[addr];
-        const { isMined, isFlagged } = cell;
-
-        !isMined && isFlagged && (cell.value = cellValue.IncorrectGuess);
-        isMined && !isFlagged && (cell.value = cellValue.BustedMine);
-
-        cell.state = cellState.Visible;
-      });
-    }));
   }
 
   get _length() {

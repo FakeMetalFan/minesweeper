@@ -7,15 +7,12 @@ export class CellNeighborsUtils {
   ) {
     this._fieldWidth = fieldWidth;
     this._fieldHeight = fieldHeight;
+
     this._cellAddressUtils = new CellAddressUtils(fieldWidth);
   }
 
   isFloodFillAble(state, address) {
-    return !this.getNeighborsAddresses(address).some(addr => {
-      const { isMined, isFlagged } = state[addr];
-
-      return isMined && !isFlagged;
-    });
+    return !this.getNeighborsAddresses(address).some(addr => state[addr].isUnrevealedMine);
   }
 
   getNeighborsAddresses(address) {
