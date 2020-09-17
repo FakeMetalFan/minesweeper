@@ -37,7 +37,7 @@ export class CellNeighborsUtils {
     return this._countNeighborsBy(state, address, 'isMined');
   }
 
-  shouldRevealNeighbors(state, address) {
+  canRevealNeighbors(state, address) {
     return this.countMinedNeighbors(state, address) === this._countNeighborsBy(state, address, 'isFlagged');
   }
 

@@ -3,6 +3,8 @@ import produce from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 import range from 'lodash/range';
 import difference from 'lodash/difference';
+import reject from 'lodash/reject';
+import some from 'lodash/some';
 
 import { cellValue, cellState } from 'const';
 
@@ -10,10 +12,6 @@ import { Cell } from './cell';
 import { CellNeighborsUtils } from './cell-neighbors-utils';
 
 export class FieldProducer {
-  isBust = false;
-
-  _isInit = false;
-
   constructor(
     width,
     height,
@@ -31,22 +29,32 @@ export class FieldProducer {
     return Array.from({ length: this._length }, () => new Cell());
   }
 
-  getState(state, cell, addr) {
-    if (!this._isInit) {
-      this._isInit = true;
+  getInitialState(state, address) {
+    return this._getFloodFilledState(produce(state, draft => {
+      const addresses =
+        difference(range(this._length), [address, ...this._cellNeighborsUtils.getNeighborsAddresses(address)]);
 
-      return this._getFloodFilledState(this._getComputedState(this._getCellRevealedState(state, addr), addr), addr);
-    }
+      const randomAddressesSet = new Set();
 
-    if (cell.isMined) {
-      this.isBust = true;
+      while (randomAddressesSet.size < this._minesCount)
+        randomAddressesSet.add(addresses[Math.random() * addresses.length | 0]);
 
-      return this._getBustedCellsState(produce(state, draft => {
-        draft[addr] = new Cell(cellValue.BustedMine, cellState.Visible);
-      }));
-    }
+      randomAddressesSet.forEach(addr => {
+        draft[addr].value = cellValue.Mine;
+      });
 
-    return this._getFloodFilledState(this._getCellRevealedState(state, addr), addr);
+      draft.forEach((cell, addr) => {
+        !cell.isMined && (cell.value = this._cellNeighborsUtils.countMinedNeighbors(draft, addr));
+      });
+    }), address);
+  }
+
+  getCellRevealedState(state, { isMined }, addr) {
+    if (isMined) return this._getBustedState(produce(state, draft => {
+      draft[addr] = new Cell(cellValue.BustedMine, cellState.Visible);
+    }));
+
+    return this._getFloodFilledState(state, addr);
   }
 
   getFlagPlantedState(state, { isFlagged }, address) {
@@ -58,36 +66,44 @@ export class FieldProducer {
   getNeighborsRevealedState(state, addr) {
     if (this._cellNeighborsUtils.isFloodFillAble(state, addr)) return this._getFloodFilledState(state, addr);
 
-    if (this._cellNeighborsUtils.shouldRevealNeighbors(state, addr)) {
-      this.isBust = true;
+    if (this._cellNeighborsUtils.canRevealNeighbors(state, addr)) return this._getBustedState(produce(state, draft => {
+      this._cellNeighborsUtils.getNeighborsAddresses(addr).forEach(address => {
+        const cell = draft[address];
+        const { isUnrevealedMine, isMisplacedFlag } = cell;
 
-      return this._getBustedCellsState(produce(state, draft => {
-        this._cellNeighborsUtils.getNeighborsAddresses(addr).forEach(address => {
-          const cell = draft[address];
-          const { isUnrevealedMine, isMisplacedFlag } = cell;
+        isUnrevealedMine && (cell.value = cellValue.BustedMine);
+        isMisplacedFlag && (cell.value = cellValue.IncorrectGuess);
 
-          isUnrevealedMine && (cell.value = cellValue.BustedMine);
-          isMisplacedFlag && (cell.value = cellValue.IncorrectGuess);
-
-          cell.state = cellState.Visible;
-        });
-      }));
-    }
+        cell.state = cellState.Visible;
+      });
+    }));
 
     return cloneDeep(state);
   }
 
-  _getCellRevealedState(state, address) {
+  isBustedState(state) {
+    return some(state, 'isBustedMine');
+  }
+
+  isVictoriousState(state) {
+    return !some(reject(state, 'isMined'), 'isHidden');
+  }
+
+  getMinesMarkedState(state) {
     return produce(state, draft => {
-      draft[address].state = cellState.Visible;
+      draft.forEach(cell => {
+        cell.isMined && (cell.state = cellState.Flagged);
+      });
     });
   }
 
   _getFloodFilledState(state, address) {
     return produce(state, draft => {
-      const floodFill = neighborAddr => {
-        this._cellNeighborsUtils.isFloodFillAble(draft, neighborAddr)
-          && this._cellNeighborsUtils.getNeighborsAddresses(neighborAddr).forEach(addr => {
+      draft[address].state = cellState.Visible;
+
+      const floodFill = neighborAddress => {
+        this._cellNeighborsUtils.isFloodFillAble(draft, neighborAddress)
+          && this._cellNeighborsUtils.getNeighborsAddresses(neighborAddress).forEach(addr => {
             const cell = draft[addr];
 
             if (cell.isFloodFillAble) {
@@ -102,15 +118,7 @@ export class FieldProducer {
     });
   }
 
-  _getComputedState(state, excludedAddress) {
-    return produce(this._getMinedState(state, excludedAddress), draft => {
-      draft.forEach((cell, addr) => {
-        !cell.isMined && (cell.value = this._cellNeighborsUtils.countMinedNeighbors(draft, addr));
-      });
-    });
-  }
-
-  _getBustedCellsState(state) {
+  _getBustedState(state) {
     return produce(state, draft => {
       draft.forEach((cell, addr) => {
         const { isUnrevealedMine, isMisplacedFlag } = cell;
@@ -119,28 +127,6 @@ export class FieldProducer {
         isMisplacedFlag && (draft[addr] = new Cell(cellValue.IncorrectGuess, cellState.Visible));
       });
     });
-  }
-
-  _getMinedState(state, excludedAddress) {
-    return produce(state, draft => {
-      this._getRandomAddresses(excludedAddress).forEach(addr => {
-        draft[addr].value = cellValue.Mine;
-      });
-    });
-  }
-
-  _getRandomAddresses(excludedAddress) {
-    const addresses = difference(
-      range(this._length),
-      [excludedAddress, ...this._cellNeighborsUtils.getNeighborsAddresses(excludedAddress)]
-    );
-
-    const randomAddresses = new Set();
-
-    while (randomAddresses.size < this._minesCount)
-      randomAddresses.add(addresses[Math.random() * addresses.length | 0]);
-
-    return [...randomAddresses];
   }
 
   get _length() {

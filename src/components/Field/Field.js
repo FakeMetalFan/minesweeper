@@ -3,9 +3,16 @@ import React from 'react';
 import { CellFactory } from '../';
 import './Field.scss';
 
-export const Field = ({ columnsCount, state, cellRevealHandler, flagPlantingHandler, neighborsRevealHandler }) => (
+export const Field = ({
+  columnsCount,
+  disabled,
+  state,
+  cellRevealHandler,
+  flagPlantingHandler,
+  neighborsRevealHandler,
+}) => (
   <div
-    className='field'
+    className={`field ${disabled ? 'disabled' : ''}`}
     style={{gridTemplateColumns: `repeat(${columnsCount}, 1fr)`}}
     onContextMenu={event => {event.preventDefault();}}
   >
