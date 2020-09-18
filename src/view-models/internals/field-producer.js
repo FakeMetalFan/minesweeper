@@ -3,8 +3,6 @@ import produce from 'immer';
 import cloneDeep from 'lodash/cloneDeep';
 import range from 'lodash/range';
 import difference from 'lodash/difference';
-import reject from 'lodash/reject';
-import some from 'lodash/some';
 
 import { cellValue, cellState } from 'const';
 
@@ -78,14 +76,6 @@ export class FieldProducer {
     }));
 
     return cloneDeep(state);
-  }
-
-  isBustedState(state) {
-    return some(state, 'isBustedMine');
-  }
-
-  isVictoriousState(state) {
-    return !some(reject(state, 'isMined'), 'isHidden');
   }
 
   getMinesMarkedState(state) {

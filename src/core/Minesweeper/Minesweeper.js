@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
+import reject from 'lodash/reject';
+import some from 'lodash/some';
+
 import { Field, Indicators } from 'components';
 
 import { FieldProducerFactory } from 'view-models/field-producer-factory';
@@ -50,8 +53,8 @@ export const Minesweeper = () => {
   }, [fieldProducer]);
 
   useDidUpdate(() => {
-    if (fieldProducer.isBustedState(field)) setIsBust(true);
-    else if (fieldProducer.isVictoriousState(field)) {
+    if (some(field, 'isBustedMine')) setIsBust(true);
+    else if (!some(reject(field, 'isMined'), 'isHidden')) {
       setField(fieldProducer.getMinesMarkedState(field));
       setMinesCount(0);
       setIsVictory(true);
