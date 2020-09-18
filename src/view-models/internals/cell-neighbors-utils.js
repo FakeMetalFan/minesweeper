@@ -7,7 +7,6 @@ export class CellNeighborsUtils {
   ) {
     this._fieldWidth = fieldWidth;
     this._fieldHeight = fieldHeight;
-
     this._cellAddressUtils = new CellAddressUtils(fieldWidth);
   }
 

@@ -2,7 +2,12 @@ import React  from 'react';
 import { render } from 'react-dom';
 
 import { App } from 'App';
-import 'index.scss';
+
+import { setupIcons } from 'setupIcons';
+
+import './index.scss';
+
+setupIcons();
 
 render(
   <React.StrictMode>

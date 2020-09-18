@@ -1,11 +1,4 @@
-$cell-dimension: 24px;
-
-@mixin background-img($url) {
-  background-image: url($url);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 85%;
-}
+$cell-dimension: 28px;
 
 @mixin cross-line($deg) {
   content: '';
@@ -14,34 +7,25 @@ $cell-dimension: 24px;
   background: red;
   position: absolute;
   top: 0;
-  left: 50%;
+  left: 45%;
   transform: rotate($deg);
 }
 
 .cell {
   width: $cell-dimension;
   height: $cell-dimension;
-  border: 1px solid black;
-  text-align: center;
+  border: none;
   font-weight: bold;
   font-size: 18px;
   cursor: pointer;
   background-color: #bdbdbd;
   outline: none;
 
-  &__mine {
-    @include background-img('~img/mine2.ico');
-  }
-
   &__busted-mine {
     background-color: red;
-
-    @include background-img('~img/mine2.ico');
   }
 
   &__incorrect-guess {
-    @include background-img('~img/mine2.ico');
-
     position: relative;
 
     &::before {
@@ -53,12 +37,8 @@ $cell-dimension: 24px;
     }
   }
 
-  &__flag {
-    @include background-img('~img/flag.ico');
-  }
-
   &__visible {
-    background-color: #fff;
+    background-color: white;
 
     &__1 {
       color: blue;

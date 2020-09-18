@@ -18,10 +18,9 @@ export class FieldProducer {
     minesCount
   ) {
     this.width = width;
+    this.minesCount = minesCount;
 
     this._height = height;
-    this._minesCount = minesCount;
-
     this._cellNeighborsUtils = new CellNeighborsUtils(width, height);
   }
 
@@ -36,7 +35,7 @@ export class FieldProducer {
 
       const randomAddressesSet = new Set();
 
-      while (randomAddressesSet.size < this._minesCount)
+      while (randomAddressesSet.size < this.minesCount)
         randomAddressesSet.add(addresses[Math.random() * addresses.length | 0]);
 
       randomAddressesSet.forEach(addr => {

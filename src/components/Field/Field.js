@@ -12,7 +12,7 @@ export const Field = ({
   neighborsRevealHandler,
 }) => (
   <div
-    className={`field ${disabled ? 'disabled' : ''}`}
+    className={`field${disabled ? ' disabled' : ''}`}
     style={{gridTemplateColumns: `repeat(${columnsCount}, 1fr)`}}
     onContextMenu={event => {event.preventDefault();}}
   >

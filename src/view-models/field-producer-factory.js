@@ -6,17 +6,15 @@ export class FieldProducerFactory {
   constructor(
     type
   ) {
-    const smallFieldProducer = new FieldProducer(fieldWidth.SM, fieldHeight.SM, minesCount.SM);
-
     switch (type) {
       case fieldProducerType.SM:
-        return smallFieldProducer;
+        return new FieldProducer(fieldWidth.SM, fieldHeight.SM, minesCount.SM);
       case fieldProducerType.MD:
         return new FieldProducer(fieldWidth.MD, fieldHeight.MD, minesCount.MD);
       case fieldProducerType.BG:
         return new FieldProducer(fieldWidth.BG, fieldHeight.BG, minesCount.BG);
       default:
-        return smallFieldProducer;
+        throw new Error(`FieldProducer of type "${type}" does not exist!`);
     }
   }
 }

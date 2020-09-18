@@ -1,5 +1,11 @@
 import React from 'react';
 
-import { Minesweeper } from 'containers/Minesweeper';
+import { Header, Minesweeper, Footer } from 'core';
 
-export const App = () => (<Minesweeper />);
+export const App = () => (
+  <>
+    <Header />
+    <Minesweeper />
+    <Footer />
+  </>
+);
