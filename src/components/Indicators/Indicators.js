@@ -27,7 +27,6 @@ export const Indicators = ({ minesCount, smileyFaceClickHandler, shouldStartCoun
       <div className='mines-count'>{formatCount(minesCount)}</div>
       <div className='smiley-face' onClick={() => {
         clearInterval(intervalId.current);
-
         setSecondsCount(0);
         smileyFaceClickHandler();
       }}>
