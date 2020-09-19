@@ -37,10 +37,6 @@ export class Cell {
     return this.state === cellState.Flagged;
   }
 
-  get isFloodFillAble() {
-    return !this.isMined && this.isHidden && !this.isFlagged;
-  }
-
   get isMisplacedFlag() {
     return !this.isMined && this.isFlagged;
   }

@@ -48,7 +48,8 @@ export const Minesweeper = () => {
 
   useEffect(() => {
     setField(fieldProducer.getEmptyState());
-  }, [fieldProducer]);
+    // eslint-disable-next-line
+  }, []);
 
   useDidUpdate(() => {
     if (some(field, 'isBustedMine')) setIsBust(true);

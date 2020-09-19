@@ -26,31 +26,29 @@ export class FieldProducer {
   }
 
   getInitialState(state, address) {
-    return this._getFloodFilledState(produce(state, draft => {
-      const addresses =
-        difference(range(this._length), [address, ...this._cellNeighborsUtils.getNeighborsAddresses(address)]);
+    return this._getFloodFilledState(state, address, draft => {
+      const addresses = difference(range(this._length), [address, ...this._cellNeighborsUtils.getAddresses(address)]);
+      const randomAddresses = new Set();
 
-      const randomAddressesSet = new Set();
+      while (randomAddresses.size < this.minesCount)
+        randomAddresses.add(addresses[Math.random() * addresses.length | 0]);
 
-      while (randomAddressesSet.size < this.minesCount)
-        randomAddressesSet.add(addresses[Math.random() * addresses.length | 0]);
-
-      randomAddressesSet.forEach(addr => {
+      randomAddresses.forEach(addr => {
         draft[addr].value = cellValue.Mine;
       });
 
       draft.forEach((cell, addr) => {
-        !cell.isMined && (cell.value = this._cellNeighborsUtils.countMinedNeighbors(draft, addr));
+        !cell.isMined && (cell.value = this._cellNeighborsUtils.getMinedCount(draft, addr));
       });
-    }), address);
+    });
   }
 
-  getCellRevealedState(state, { isMined }, addr) {
-    if (isMined) return this._getBustedState(produce(state, draft => {
-      draft[addr] = new Cell(cellValue.BustedMine, cellState.Visible);
-    }));
+  getCellRevealedState(state, { isMined }, address) {
+    if (isMined) return this._getBustedState(state, draft => {
+      draft[address] = new Cell(cellValue.BustedMine, cellState.Visible);
+    });
 
-    return this._getFloodFilledState(state, addr);
+    return this._getFloodFilledState(state, address);
   }
 
   getFlagPlantedState(state, { isFlagged }, address) {
@@ -59,12 +57,12 @@ export class FieldProducer {
     });
   }
 
-  getNeighborsRevealedState(state, addr) {
-    if (this._cellNeighborsUtils.isFloodFillAble(state, addr)) return this._getFloodFilledState(state, addr);
+  getNeighborsRevealedState(state, address) {
+    if (this._cellNeighborsUtils.canFloodFill(state, address)) return this._getFloodFilledState(state, address);
 
-    if (this._cellNeighborsUtils.canRevealNeighbors(state, addr)) return this._getBustedState(produce(state, draft => {
-      this._cellNeighborsUtils.getNeighborsAddresses(addr).forEach(address => {
-        const cell = draft[address];
+    if (this._cellNeighborsUtils.canRevealNeighbors(state, address)) return this._getBustedState(state, draft => {
+      this._cellNeighborsUtils.getAddresses(address).forEach(addr=> {
+        const cell = draft[addr];
         const { isUnrevealedMine, isMisplacedFlag } = cell;
 
         isUnrevealedMine && (cell.value = cellValue.BustedMine);
@@ -72,7 +70,7 @@ export class FieldProducer {
 
         cell.state = cellState.Visible;
       });
-    }));
+    });
 
     return cloneDeep(state);
   }
@@ -85,16 +83,19 @@ export class FieldProducer {
     });
   }
 
-  _getFloodFilledState(state, address) {
+  _getFloodFilledState(state, address, draftFn) {
     return produce(state, draft => {
+      // eslint-disable-next-line
+      draftFn?.(draft);
+
       draft[address].state = cellState.Visible;
 
-      const floodFill = neighborAddress => {
-        this._cellNeighborsUtils.isFloodFillAble(draft, neighborAddress)
-          && this._cellNeighborsUtils.getNeighborsAddresses(neighborAddress).forEach(addr => {
+      const floodFill = a => {
+        this._cellNeighborsUtils.canFloodFill(draft, a) && this._cellNeighborsUtils.getAddresses(a).forEach(addr => {
             const cell = draft[addr];
+            const { isMined, isHidden, isFlagged } = cell;
 
-            if (cell.isFloodFillAble) {
+            if (!isMined && isHidden && !isFlagged) {
               cell.state = cellState.Visible;
 
               floodFill(addr);
@@ -106,8 +107,10 @@ export class FieldProducer {
     });
   }
 
-  _getBustedState(state) {
+  _getBustedState(state, draftFn) {
     return produce(state, draft => {
+      draftFn(draft);
+
       draft.forEach((cell, addr) => {
         const { isUnrevealedMine, isMisplacedFlag } = cell;
 
