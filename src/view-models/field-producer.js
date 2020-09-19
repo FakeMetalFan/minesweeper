@@ -6,8 +6,8 @@ import difference from 'lodash/difference';
 
 import { cellValue, cellState } from 'const';
 
-import { Cell } from './cell';
-import { CellNeighborsUtils } from './cell-neighbors-utils';
+import { Cell } from './internals/cell';
+import { CellNeighborsUtils } from './internals/cell-neighbors-utils';
 
 export class FieldProducer {
   constructor(
