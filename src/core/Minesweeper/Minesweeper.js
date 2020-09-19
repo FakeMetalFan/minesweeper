@@ -3,20 +3,18 @@ import React, { useEffect, useState } from 'react';
 import reject from 'lodash/reject';
 import some from 'lodash/some';
 
+import { FieldProducer } from 'view-models/field-producer';
+
 import { Field, Indicators } from 'components';
-
-import { FieldProducerFactory } from 'view-models/field-producer-factory';
-
-import { fieldProducerType } from 'const';
 
 import { useDidUpdate } from 'hooks/use-did-update';
 
 import './Minesweeper.scss';
 
 export const Minesweeper = () => {
-  const [fieldProducer] = useState(new FieldProducerFactory(fieldProducerType.MD));
-
+  const [fieldProducer] = useState(new FieldProducer(16, 16, 30));
   const [field, setField] = useState([]);
+
   const [minesCount, setMinesCount] = useState(fieldProducer.minesCount);
 
   const [isInit, setIsInit] = useState(false);
