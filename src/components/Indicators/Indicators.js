@@ -2,9 +2,9 @@ import React, { useRef, useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { useDidUpdate } from 'hooks/use-did-update';
+import { useDidUpdate } from 'hooks';
 
-import { formatCount } from 'utils/count-formatter';
+import { formatCount } from 'utils';
 
 import './Indicators.scss';
 
