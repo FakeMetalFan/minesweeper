@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import reject from 'lodash/reject';
 import some from 'lodash/some';
 
-import { Field, Indicators } from 'components';
-
 import { useField, useDidUpdate } from 'hooks';
+
+import { Field, Indicators } from '..';
 
 import './Minesweeper.scss';
 

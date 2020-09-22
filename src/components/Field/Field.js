@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { CellFactory } from '../';
+import { CellFactory } from '..';
+
 import './Field.scss';
 
 export const Field = ({
