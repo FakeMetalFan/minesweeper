@@ -90,7 +90,7 @@ export const useField = ({ width, height, minesCount }) => {
   const setNeighborsRevealedState = address => {
     setState(prevState => {
       if (cellNeighborsUtils.canFloodFill(prevState, address)) return getFloodFilledState(prevState, address);
-      if (cellNeighborsUtils.canRevealNeighbors(prevState, address)) return getBustedState(prevState,draft => {
+      if (cellNeighborsUtils.canRevealNeighbors(prevState, address)) return getBustedState(prevState, draft => {
         cellNeighborsUtils.getAddresses(address).forEach(addr => {
           const cell = draft[addr];
           const { isUnrevealedMine, isMisplacedFlag } = cell;
