@@ -1,6 +1,5 @@
 import produce from 'immer';
 
-import cloneDeep from 'lodash/cloneDeep';
 import range from 'lodash/range';
 import difference from 'lodash/difference';
 
@@ -9,28 +8,29 @@ import { cellValue, cellState } from 'const';
 import { Cell, CellNeighborsUtils } from './internals';
 
 export class FieldProducer {
+  state = [];
+
   constructor(
     width,
     height,
     minesCount
   ) {
-    this.width = width;
-    this.minesCount = minesCount;
-
+    this._width = width;
     this._height = height;
+    this._minesCount = minesCount;
     this._cellNeighborsUtils = new CellNeighborsUtils(width, height);
   }
 
-  getEmptyState() {
-    return Array.from({ length: this._length }, () => new Cell());
+  setEmptyState() {
+    this.state = Array.from({ length: this._length }, () => new Cell());
   }
 
-  getInitialState(state, address) {
-    return this._getFloodFilledState(state, address, draft => {
+  setInitialState(address) {
+    this.state = this._getFloodFilledState(address, draft => {
       const addresses = difference(range(this._length), [address, ...this._cellNeighborsUtils.getAddresses(address)]);
       const randomAddresses = new Set();
 
-      while (randomAddresses.size < this.minesCount)
+      while (randomAddresses.size < this._minesCount)
         randomAddresses.add(addresses[Math.random() * addresses.length | 0]);
 
       randomAddresses.forEach(addr => {
@@ -43,26 +43,23 @@ export class FieldProducer {
     });
   }
 
-  getCellRevealedState(state, { isMined }, address) {
-    if (isMined) return this._getBustedState(state, draft => {
+  setCellRevealedState({ isMined }, address) {
+    this.state = isMined ? this._getBustedState(draft => {
       draft[address] = new Cell(cellValue.BustedMine, cellState.Visible);
-    });
-
-    return this._getFloodFilledState(state, address);
+    }) : this._getFloodFilledState(address);
   }
 
-  getFlagPlantedState(state, { isFlagged }, address) {
-    return produce(state, draft => {
+  setFlagPlantedState({ isFlagged }, address) {
+    this.state = produce(this.state, draft => {
       draft[address].state = cellState[isFlagged ? 'Hidden' : 'Flagged'];
     });
   }
 
-  getNeighborsRevealedState(state, address) {
-    if (this._cellNeighborsUtils.canFloodFill(state, address)) return this._getFloodFilledState(state, address);
-
-    if (this._cellNeighborsUtils.canRevealNeighbors(state, address)) return this._getBustedState(state, draft => {
-      this._cellNeighborsUtils.getAddresses(address).forEach(addr=> {
-        const cell = draft[addr];
+  setNeighborsRevealedState(addr) {
+    if (this._cellNeighborsUtils.canFloodFill(this.state, addr)) this.state = this._getFloodFilledState(addr);
+    else if (this._cellNeighborsUtils.canRevealNeighbors(this.state, addr)) this.state = this._getBustedState(draft => {
+      this._cellNeighborsUtils.getAddresses(addr).forEach(address => {
+        const cell = draft[address];
         const { isUnrevealedMine, isMisplacedFlag } = cell;
 
         isUnrevealedMine && (cell.value = cellValue.BustedMine);
@@ -71,27 +68,26 @@ export class FieldProducer {
         cell.state = cellState.Visible;
       });
     });
-
-    return cloneDeep(state);
   }
 
-  getMinesMarkedState(state) {
-    return produce(state, draft => {
+  setMinesMarkedState() {
+    this.state = produce(this.state, draft => {
       draft.forEach(cell => {
         cell.isMined && (cell.state = cellState.Flagged);
       });
     });
   }
 
-  _getFloodFilledState(state, address, draftFn) {
-    return produce(state, draft => {
+  _getFloodFilledState(address, draftFn) {
+    return produce(this.state, draft => {
       // eslint-disable-next-line
       draftFn?.(draft);
 
       draft[address].state = cellState.Visible;
 
-      const floodFill = a => {
-        this._cellNeighborsUtils.canFloodFill(draft, a) && this._cellNeighborsUtils.getAddresses(a).forEach(addr => {
+      const floodFill = cellAddr => {
+        this._cellNeighborsUtils.canFloodFill(draft, cellAddr)
+          && this._cellNeighborsUtils.getAddresses(cellAddr).forEach(addr => {
             const cell = draft[addr];
             const { isMined, isHidden, isFlagged } = cell;
 
@@ -107,8 +103,8 @@ export class FieldProducer {
     });
   }
 
-  _getBustedState(state, draftFn) {
-    return produce(state, draft => {
+  _getBustedState(draftFn) {
+    return produce(this.state, draft => {
       draftFn(draft);
 
       draft.forEach((cell, addr) => {
@@ -121,6 +117,6 @@ export class FieldProducer {
   }
 
   get _length() {
-    return this.width * this._height;
+    return this._width * this._height;
   }
 }
