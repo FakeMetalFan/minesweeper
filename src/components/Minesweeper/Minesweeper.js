@@ -42,10 +42,6 @@ export const Minesweeper = () => {
     setRemainingMinesCount(remainingMinesCount + (cell.isFlagged ? 1 : -1));
   };
 
-  const handleNeighborsReveal = address => {
-    setNeighborsRevealedFieldState(address);
-  };
-
   const handleSmileyFaceClick = () => {
     setEmptyFieldState();
     setRemainingMinesCount(minesCount);
@@ -79,7 +75,7 @@ export const Minesweeper = () => {
         state={field}
         cellRevealHandler={handleCellReveal}
         flagPlantingHandler={handleFlagPlanting}
-        neighborsRevealHandler={handleNeighborsReveal}
+        neighborsRevealHandler={setNeighborsRevealedFieldState}
       />
     </div>
   );
