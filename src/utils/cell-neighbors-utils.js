@@ -1,4 +1,4 @@
-import { CellAddressUtils } from './cell-address-utils';
+import { CellAddressUtils } from './internals/cell-address-utils';
 
 export class CellNeighborsUtils {
   constructor(
