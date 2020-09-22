@@ -14,7 +14,7 @@ export const Indicators = ({ minesCount, smileyFaceClickHandler, shouldStartCoun
 
   useDidUpdate(() => {
     shouldStartCountingSeconds && (intervalId.current = setInterval(() => {
-      setSecondsCount(seconds => seconds + 1);
+      setSecondsCount(count => count + 1);
     }, 1e3));
   }, shouldStartCountingSeconds);
 
