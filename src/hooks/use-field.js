@@ -119,7 +119,7 @@ export const useField = ({ width, height, minesCount }) => {
     // eslint-disable-next-line
   }, []);
 
-  return [
+  return {
     state,
     setEmptyState,
     setInitialState,
@@ -127,5 +127,5 @@ export const useField = ({ width, height, minesCount }) => {
     setFlagPlantedState,
     setNeighborsRevealedState,
     setMinesMarkedState,
-  ];
+  };
 };

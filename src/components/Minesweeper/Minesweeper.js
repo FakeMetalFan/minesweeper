@@ -13,15 +13,15 @@ export const Minesweeper = () => {
   const fieldDimension = 16;
   const minesCount = 30;
 
-  const [
-    field,
-    setEmptyFieldState,
-    setInitialFieldState,
-    setCellRevealedFieldState,
-    setFlagPlantedFieldState,
-    setNeighborsRevealedFieldState,
-    setMinesMarkedFieldState,
-  ] = useField({ minesCount, width: fieldDimension, height: fieldDimension });
+  const {
+    state: field,
+    setEmptyState: setEmptyFieldState,
+    setInitialState: setInitialFieldState,
+    setCellRevealedState: setCellRevealedFieldState,
+    setFlagPlantedState: setFlagPlantedFieldState,
+    setNeighborsRevealedState: setNeighborsRevealedFieldState,
+    setMinesMarkedState: setMinesMarkedFieldState,
+  } = useField({ minesCount, width: fieldDimension, height: fieldDimension });
 
   const [remainingMinesCount, setRemainingMinesCount] = useState(minesCount);
 
