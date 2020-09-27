@@ -17,7 +17,7 @@ export const useField = ({ width, height, minesCount }) => {
 
   const getEmptyState = useCallback(() => Array.from({ length }, () => new Cell()), [length]);
 
-  const [state, setState] = useState(getEmptyState());
+  const [state, setState] = useState(() => getEmptyState());
 
   const cellNeighborsUtils = useMemo(() => new CellNeighborsUtils(width, height), [width, height]);
 
