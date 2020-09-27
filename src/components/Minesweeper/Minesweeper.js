@@ -15,12 +15,12 @@ export const Minesweeper = () => {
 
   const {
     state: field,
-    setEmptyState: setEmptyFieldState,
-    setInitialState: setInitialFieldState,
-    setCellRevealedState: setCellRevealedFieldState,
-    setFlagPlantedState: setFlagPlantedFieldState,
-    setNeighborsRevealedState: setNeighborsRevealedFieldState,
-    setMinesMarkedState: setMinesMarkedFieldState,
+    clear: clearField,
+    init: initField,
+    revealCell,
+    plantFlag,
+    revealNeighbors,
+    markMines,
   } = useField({ minesCount, width: fieldDimension, height: fieldDimension });
 
   const [remainingMinesCount, setRemainingMinesCount] = useState(minesCount);
@@ -30,20 +30,20 @@ export const Minesweeper = () => {
   const [isVictory, setIsVictory] = useState(false);
 
   const handleCellReveal = (cell, address) => {
-    if (isInit) setCellRevealedFieldState(cell, address);
+    if (isInit) revealCell(cell, address);
     else {
-      setInitialFieldState(address)
+      initField(address)
       setIsInit(true);
     }
   };
 
   const handleFlagPlanting = (cell, address) => {
-    setFlagPlantedFieldState(cell, address);
+    plantFlag(cell, address);
     setRemainingMinesCount(remainingMinesCount + (cell.isFlagged ? 1 : -1));
   };
 
   const handleSmileyFaceClick = () => {
-    setEmptyFieldState();
+    clearField();
     setRemainingMinesCount(minesCount);
     setIsInit(false);
     setIsBust(false);
@@ -53,7 +53,7 @@ export const Minesweeper = () => {
   useDidUpdate(() => {
     if (some(field, 'isBustedMine')) setIsBust(true);
     else if (!some(reject(field, 'isMined'), 'isHidden')) {
-      setMinesMarkedFieldState();
+      markMines();
       setRemainingMinesCount(0);
       setIsVictory(true);
     }
@@ -75,7 +75,7 @@ export const Minesweeper = () => {
         state={field}
         cellRevealHandler={handleCellReveal}
         flagPlantingHandler={handleFlagPlanting}
-        neighborsRevealHandler={setNeighborsRevealedFieldState}
+        neighborsRevealHandler={revealNeighbors}
       />
     </div>
   );

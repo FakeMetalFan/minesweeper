@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 
 import produce from 'immer';
 
@@ -13,11 +13,13 @@ import { CellNeighborsUtils } from 'utils';
 import { Cell } from 'vm/cell';
 
 export const useField = ({ width, height, minesCount }) => {
-  const [state, setState] = useState([]);
+  const length = width * height;
+
+  const getEmptyState = useCallback(() => Array.from({ length }, () => new Cell()), [length]);
+
+  const [state, setState] = useState(getEmptyState());
 
   const cellNeighborsUtils = useMemo(() => new CellNeighborsUtils(width, height), [width, height]);
-
-  const length = width * height;
 
   const getFloodFilledState = (prevState, address, draftFn) => produce(prevState, draft => {
     // eslint-disable-next-line
@@ -52,13 +54,11 @@ export const useField = ({ width, height, minesCount }) => {
     });
   });
 
-  const getEmptyState = useCallback(() => Array.from({ length }, () => new Cell()), [length]);
-
-  const setEmptyState = () => {
+  const clear = () => {
     setState(getEmptyState());
   };
 
-  const setInitialState = address => {
+  const init = address => {
     setState(prevState => getFloodFilledState(prevState, address, draft => {
       const addresses = difference(range(length), [address, ...cellNeighborsUtils.getAddresses(address)]);
       const randomAddresses = new Set();
@@ -75,19 +75,19 @@ export const useField = ({ width, height, minesCount }) => {
     }));
   };
 
-  const setCellRevealedState = ({ isMined }, address) => {
+  const revealCell = ({ isMined }, address) => {
     setState(prevState => isMined ? getBustedState(prevState, draft => {
       draft[address] = new Cell(cellValue.BustedMine, cellState.Visible);
     }) : getFloodFilledState(prevState, address));
   };
 
-  const setFlagPlantedState = ({ isFlagged }, address) => {
+  const plantFlag = ({ isFlagged }, address) => {
     setState(prevState => produce(prevState, draft => {
       draft[address].state = cellState[isFlagged ? 'Hidden' : 'Flagged'];
     }));
   };
 
-  const setNeighborsRevealedState = address => {
+  const revealNeighbors = address => {
     setState(prevState => {
       if (cellNeighborsUtils.canFloodFill(prevState, address)) return getFloodFilledState(prevState, address);
       if (cellNeighborsUtils.canRevealNeighbors(prevState, address)) return getBustedState(prevState, draft => {
@@ -106,7 +106,7 @@ export const useField = ({ width, height, minesCount }) => {
     });
   };
 
-  const setMinesMarkedState = () => {
+  const markMines = () => {
     setState(prevState => produce(prevState, draft => {
       draft.forEach(cell => {
         cell.isMined && (cell.state = cellState.Flagged);
@@ -114,18 +114,5 @@ export const useField = ({ width, height, minesCount }) => {
     }));
   };
 
-  useEffect(() => {
-    setEmptyState();
-    // eslint-disable-next-line
-  }, []);
-
-  return {
-    state,
-    setEmptyState,
-    setInitialState,
-    setCellRevealedState,
-    setFlagPlantedState,
-    setNeighborsRevealedState,
-    setMinesMarkedState,
-  };
+  return { state, clear, init, revealCell, plantFlag, revealNeighbors, markMines };
 };
