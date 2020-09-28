@@ -70,7 +70,7 @@ export const Minesweeper = () => {
       />
 
       <Field
-        columnsCount={fieldDimension}
+        width={fieldDimension}
         disabled={isBust || isVictory}
         state={field}
         cellRevealHandler={handleCellReveal}

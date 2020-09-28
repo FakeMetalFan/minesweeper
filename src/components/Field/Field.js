@@ -4,14 +4,7 @@ import { CellFactory } from '..';
 
 import './Field.scss';
 
-export const Field = ({
-  columnsCount,
-  disabled,
-  state,
-  cellRevealHandler,
-  flagPlantingHandler,
-  neighborsRevealHandler,
-}) => {
+export const Field = ({ width, disabled, state, cellRevealHandler, flagPlantingHandler, neighborsRevealHandler }) => {
   const handleFlagPlanting = (event, cell, address) => {
     event.preventDefault();
 
@@ -33,7 +26,7 @@ export const Field = ({
   return (
     <div
       className={`field${disabled ? ' disabled' : ''}`}
-      style={{gridTemplateColumns: `repeat(${columnsCount}, 1fr)`}}
+      style={{gridTemplateColumns: `repeat(${width}, 1fr)`}}
       onContextMenu={event => {event.preventDefault();}}
     >
       {state.map((cell, address) => <CellFactory
