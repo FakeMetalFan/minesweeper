@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { useDidUpdate } from 'hooks';
+import { useDidUpdate, useInterval } from 'hooks';
 
 import { formatCount } from 'utils';
 
@@ -10,23 +10,25 @@ import './Indicators.scss';
 
 export const Indicators = ({ minesCount, smileyFaceClickHandler, shouldStartCountingSeconds, isBust, isVictory }) => {
   const [secondsCount, setSecondsCount] = useState(0);
-  const intervalId = useRef();
+  const [intervalDelay, setIntervalDelay] = useState(null);
 
   useDidUpdate(() => {
-    shouldStartCountingSeconds && (intervalId.current = setInterval(() => {
-      setSecondsCount(count => count + 1);
-    }, 1e3));
+    shouldStartCountingSeconds && setIntervalDelay(1e3);
   }, shouldStartCountingSeconds);
 
   useDidUpdate(() => {
-    (isBust || isVictory) && clearInterval(intervalId.current);
+    (isBust || isVictory) && setIntervalDelay(null);
   }, isBust, isVictory);
+
+  useInterval(() => {
+    setSecondsCount(count => count + 1);
+  }, intervalDelay);
 
   return (
     <div className='indicators'>
       <div className='mines-count'>{formatCount(minesCount)}</div>
       <div className='smiley-face' onClick={() => {
-        clearInterval(intervalId.current);
+        setIntervalDelay(null);
         setSecondsCount(0);
         smileyFaceClickHandler();
       }}>
