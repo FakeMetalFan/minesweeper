@@ -4,7 +4,6 @@ import produce from 'immer';
 
 import difference from 'lodash/difference';
 import range from 'lodash/range';
-import cloneDeep from 'lodash/cloneDeep';
 
 import { cellState, cellValue } from 'const';
 
@@ -103,7 +102,7 @@ export const useField = ({ width, height, minesCount }) => {
         });
       });
 
-      return cloneDeep(prevState);
+      return prevState;
     });
   };
 
