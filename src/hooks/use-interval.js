@@ -1,21 +1,16 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 export const useInterval = (fn, delay) => {
-  const fnRef = useRef();
-
-  useEffect(() => {
-    fnRef.current = fn;
-  }, [fn]);
-
   useEffect(() => {
     if (delay) {
       const intervalId = setInterval(() => {
-        fnRef.current();
+        fn();
       }, delay);
 
       return () => {
         clearInterval(intervalId);
       };
     }
+    // eslint-disable-next-line
   }, [delay]);
 };
