@@ -11,32 +11,38 @@ export const Field = ({
   cellRevealHandler,
   flagPlantingHandler,
   neighborsRevealHandler,
-}) => (
-  <div
-    className={`field${disabled ? ' disabled' : ''}`}
-    style={{gridTemplateColumns: `repeat(${columnsCount}, 1fr)`}}
-    onContextMenu={event => {event.preventDefault();}}
-  >
-    {state.map((cell, address) => <CellFactory
-      key={address}
-      state={cell}
-      cellRevealHandler={() => {cellRevealHandler(cell, address);}}
-      flagPlantingHandler={event => {
-        event.preventDefault();
+}) => {
+  const handleFlagPlanting = (event, cell, address) => {
+    event.preventDefault();
 
-        flagPlantingHandler(cell, address);
-      }}
-      neighborsRevealHandler={({ target, nativeEvent }) => {
-        const { which } = nativeEvent;
+    flagPlantingHandler(cell, address);
+  };
 
-        const mouseupHandler = event => {
-          which !== event.which && neighborsRevealHandler(address);
+  const handleNeighborsReveal = ({ target, nativeEvent }, address) => {
+    const { which } = nativeEvent;
 
-          target.removeEventListener('mouseup', mouseupHandler);
-        };
+    const handleMouseup = event => {
+      which !== event.which && neighborsRevealHandler(address);
 
-        target.addEventListener('mouseup', mouseupHandler);
-      }}
-    />)}
-  </div>
-);
+      target.removeEventListener('mouseup', handleMouseup);
+    };
+
+    target.addEventListener('mouseup', handleMouseup);
+  };
+
+  return (
+    <div
+      className={`field${disabled ? ' disabled' : ''}`}
+      style={{gridTemplateColumns: `repeat(${columnsCount}, 1fr)`}}
+      onContextMenu={event => {event.preventDefault();}}
+    >
+      {state.map((cell, address) => <CellFactory
+        key={address}
+        state={cell}
+        cellRevealHandler={() => {cellRevealHandler(cell, address);}}
+        flagPlantingHandler={event => {handleFlagPlanting(event, cell, address);}}
+        neighborsRevealHandler={event => {handleNeighborsReveal(event, address);}}
+      />)}
+    </div>
+  );
+};
