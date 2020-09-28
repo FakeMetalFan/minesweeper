@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './CellFactory.scss';
 
-export const CellFactory = ({ state, cellRevealHandler, flagPlantingHandler, neighborsRevealHandler }) => {
+export const CellFactory = memo(({ state, cellRevealHandler, flagPlantingHandler, neighborsRevealHandler }) => {
   const { isHidden, isFlagged, isEmpty, isMined, isIncorrectGuess, isBustedMine, value } = state;
 
   if (isHidden) return (<button className='cell' onClick={cellRevealHandler} onContextMenu={flagPlantingHandler} />);
@@ -24,4 +24,4 @@ export const CellFactory = ({ state, cellRevealHandler, flagPlantingHandler, nei
   return (<button className={`cell cell__visible cell__visible__${value}`} onMouseDown={neighborsRevealHandler}>
     {value}
   </button>);
-};
+});
