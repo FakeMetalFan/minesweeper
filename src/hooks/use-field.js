@@ -15,7 +15,7 @@ import { Cell } from 'vm/cell';
 export const useField = ({ width, height, minesCount }) => {
   const length = width * height;
 
-  const getEmptyState = useCallback(() => Array.from({ length }, () => new Cell()), [length]);
+  const getEmptyState = useCallback(() => Array(length).fill(new Cell()), [length]);
 
   const [state, setState] = useState(() => getEmptyState());
 
