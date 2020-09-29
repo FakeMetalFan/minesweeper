@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 
 import produce from 'immer';
 
@@ -12,9 +12,9 @@ import { Cell, CellNeighborsUtils } from 'view-models';
 export const useField = ({ width, height, minesCount }) => {
   const length = width * height;
 
-  const getEmptyField = useCallback(() => Array(length).fill(new Cell()), [length]);
+  const emptyField = useMemo(() => Array(length).fill(new Cell()), [length]);
 
-  const [field, setField] = useState(() => getEmptyField());
+  const [field, setField] = useState(emptyField);
 
   const cellNeighborsUtils = useMemo(() => new CellNeighborsUtils(width, height), [width, height]);
 
@@ -52,7 +52,7 @@ export const useField = ({ width, height, minesCount }) => {
   });
 
   const clear = () => {
-    setField(getEmptyField());
+    setField(emptyField);
   };
 
   const init = address => {
