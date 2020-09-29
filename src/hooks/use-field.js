@@ -7,9 +7,7 @@ import range from 'lodash/range';
 
 import { cellState, cellValue } from 'const';
 
-import { CellNeighborsUtils } from 'utils';
-
-import { Cell } from 'vm/cell';
+import { Cell, CellNeighborsUtils } from 'view-models';
 
 export const useField = ({ width, height, minesCount }) => {
   const length = width * height;

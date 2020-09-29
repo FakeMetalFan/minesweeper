@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useDidUpdate, useInterval } from 'hooks';
 
-import { formatCount } from 'utils';
+import { formatCount } from 'utils/count-formatter';
 
 import './Indicators.scss';
 
