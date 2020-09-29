@@ -14,9 +14,9 @@ export const Minesweeper = () => {
   const minesCount = 30;
 
   const {
-    state: field,
-    clear: clearField,
-    init: initField,
+    field,
+    clear,
+    init,
     revealCell,
     plantFlag,
     revealNeighbors,
@@ -32,7 +32,7 @@ export const Minesweeper = () => {
   const handleCellReveal = (cell, address) => {
     if (isInit) revealCell(cell, address);
     else {
-      initField(address)
+      init(address)
       setIsInit(true);
     }
   };
@@ -43,7 +43,7 @@ export const Minesweeper = () => {
   };
 
   const handleSmileyFaceClick = () => {
-    clearField();
+    clear();
     setRemainingMinesCount(minesCount);
     setIsInit(false);
     setIsBust(false);
