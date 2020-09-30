@@ -1,7 +1,7 @@
 # Minesweeper
 
 ## About
-An implementation of Minesweeper game using Javascript and React.js
+An implementation of a Minesweeper game using Javascript and React.js
 
 ## Getting started
 
