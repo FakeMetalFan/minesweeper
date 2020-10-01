@@ -15,18 +15,18 @@ export class CellNeighborsUtils {
   }
 
   getAddresses(address) {
-    const [rowAddress, cellAddress] = this._cellAddressUtils.to2DAddresses(address);
+    const [rowAddress, colAddress] = this._cellAddressUtils.to2DAddresses(address);
     const addresses = [];
 
     for (let rowAddressOffset = -1; rowAddressOffset < 2; rowAddressOffset++)
       for (let cellAddressOffset = -1; cellAddressOffset < 2; cellAddressOffset++)
         if (rowAddressOffset || cellAddressOffset) {
           const rowAddressWithOffset = rowAddress + rowAddressOffset;
-          const cellAddressWithOffset = cellAddress + cellAddressOffset;
+          const colAddressWithOffset = colAddress + cellAddressOffset;
 
           this._doesAddressExist(rowAddressWithOffset, this._fieldWidth)
-            && this._doesAddressExist(cellAddressWithOffset, this._fieldHeight)
-              && addresses.push(this._cellAddressUtils.to1DAddress(rowAddressWithOffset, cellAddressWithOffset));
+            && this._doesAddressExist(colAddressWithOffset, this._fieldHeight)
+              && addresses.push(this._cellAddressUtils.to1DAddress(rowAddressWithOffset, colAddressWithOffset));
         }
 
     return addresses;
