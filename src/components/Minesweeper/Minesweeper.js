@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import reject from 'lodash/reject';
 import some from 'lodash/some';
 
-import { useField, useDidUpdate } from 'hooks';
+import { useMinesweeper, useDidUpdate } from 'hooks';
 
 import { Field, Indicators } from '..';
 
@@ -14,14 +14,14 @@ export const Minesweeper = () => {
   const minesCount = 30;
 
   const {
-    field,
+    state,
     clear,
     init,
     revealCell,
     plantFlag,
     revealNeighbors,
     markMines,
-  } = useField({ minesCount, width: fieldDimension, height: fieldDimension });
+  } = useMinesweeper({ minesCount, width: fieldDimension, height: fieldDimension });
 
   const [remainingMinesCount, setRemainingMinesCount] = useState(minesCount);
 
@@ -51,13 +51,13 @@ export const Minesweeper = () => {
   };
 
   useDidUpdate(() => {
-    if (some(field, 'isBustedMine')) setIsBust(true);
-    else if (!some(reject(field, 'isMined'), 'isHidden')) {
+    if (some(state, 'isBustedMine')) setIsBust(true);
+    else if (!some(reject(state, 'isMined'), 'isHidden')) {
       markMines();
       setRemainingMinesCount(0);
       setIsVictory(true);
     }
-  }, field);
+  }, state);
 
   return (
     <div className='minesweeper'>
@@ -72,7 +72,7 @@ export const Minesweeper = () => {
       <Field
         width={fieldDimension}
         disabled={isBust || isVictory}
-        state={field}
+        state={state}
         cellRevealHandler={handleCellReveal}
         flagPlantingHandler={handleFlagPlanting}
         neighborsRevealHandler={revealNeighbors}

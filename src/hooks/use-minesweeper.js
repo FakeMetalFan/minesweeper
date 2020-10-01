@@ -9,16 +9,16 @@ import { cellState, cellValue } from 'const';
 
 import { CellVM, CellNeighborsUtils } from 'view-models';
 
-export const useField = ({ width, height, minesCount }) => {
+export const useMinesweeper = ({ width, height, minesCount }) => {
   const length = width * height;
 
-  const emptyField = useMemo(() => Array(length).fill(new CellVM()), [length]);
+  const emptyState = useMemo(() => Array(length).fill(new CellVM()), [length]);
 
-  const [field, setField] = useState(emptyField);
+  const [state, setState] = useState(emptyState);
 
   const cellNeighborsUtils = useMemo(() => new CellNeighborsUtils(width, height), [width, height]);
 
-  const getFloodFilledField = (prevField, address, draftFn) => produce(prevField, draft => {
+  const getFloodFilledState = (prevState, address, draftFn) => produce(prevState, draft => {
     // eslint-disable-next-line
     draftFn?.(draft);
 
@@ -40,7 +40,7 @@ export const useField = ({ width, height, minesCount }) => {
     floodFill(address);
   });
 
-  const getBustedField = (prevField, draftFn) => produce(prevField, draft => {
+  const getBustedState = (prevState, draftFn) => produce(prevState, draft => {
     draftFn(draft);
 
     draft.forEach((cell, addr) => {
@@ -52,11 +52,11 @@ export const useField = ({ width, height, minesCount }) => {
   });
 
   const clear = () => {
-    setField(emptyField);
+    setState(emptyState);
   };
 
   const init = address => {
-    setField(prevField => getFloodFilledField(prevField, address, draft => {
+    setState(prevState => getFloodFilledState(prevState, address, draft => {
       const addresses = difference(range(length), [address, ...cellNeighborsUtils.getAddresses(address)]);
       const randomAddresses = new Set();
 
@@ -73,22 +73,22 @@ export const useField = ({ width, height, minesCount }) => {
   };
 
   const revealCell = ({ isMined }, address) => {
-    setField(prevField => isMined ? getBustedField(prevField, draft => {
+    setState(prevState => isMined ? getBustedState(prevState, draft => {
       draft[address] = new CellVM(cellValue.BustedMine, cellState.Visible);
-    }) : getFloodFilledField(prevField, address));
+    }) : getFloodFilledState(prevState, address));
   };
 
   const plantFlag = ({ isFlagged }, address) => {
-    setField(prevField => produce(prevField, draft => {
+    setState(prevState => produce(prevState, draft => {
       draft[address].state = cellState[isFlagged ? 'Hidden' : 'Flagged'];
     }));
   };
 
   const revealNeighbors = address => {
-    setField(prevField => {
-      if (cellNeighborsUtils.canFloodFill(prevField, address)) return getFloodFilledField(prevField, address);
+    setState(prevState => {
+      if (cellNeighborsUtils.canFloodFill(prevState, address)) return getFloodFilledState(prevState, address);
 
-      if (cellNeighborsUtils.canRevealNeighbors(prevField, address)) return getBustedField(prevField, draft => {
+      if (cellNeighborsUtils.canRevealNeighbors(prevState, address)) return getBustedState(prevState, draft => {
         cellNeighborsUtils.getAddresses(address).forEach(addr => {
           const cell = draft[addr];
           const { isUnrevealedMine, isMisplacedFlag } = cell;
@@ -100,17 +100,17 @@ export const useField = ({ width, height, minesCount }) => {
         });
       });
 
-      return prevField;
+      return prevState;
     });
   };
 
   const markMines = () => {
-    setField(prevField => produce(prevField, draft => {
+    setState(prevState => produce(prevState, draft => {
       draft.forEach(cell => {
         cell.isMined && (cell.state = cellState.Flagged);
       });
     }));
   };
 
-  return { field, clear, init, revealCell, plantFlag, revealNeighbors, markMines };
+  return { state, clear, init, revealCell, plantFlag, revealNeighbors, markMines };
 };
