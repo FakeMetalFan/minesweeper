@@ -7,12 +7,12 @@ import range from 'lodash/range';
 
 import { cellState, cellValue } from 'const';
 
-import { Cell, CellNeighborsUtils } from 'view-models';
+import { CellVM, CellNeighborsUtils } from 'view-models';
 
 export const useField = ({ width, height, minesCount }) => {
   const length = width * height;
 
-  const emptyField = useMemo(() => Array(length).fill(new Cell()), [length]);
+  const emptyField = useMemo(() => Array(length).fill(new CellVM()), [length]);
 
   const [field, setField] = useState(emptyField);
 
@@ -47,7 +47,7 @@ export const useField = ({ width, height, minesCount }) => {
       const { isUnrevealedMine, isMisplacedFlag } = cell;
 
       isUnrevealedMine && (cell.state = cellState.Visible);
-      isMisplacedFlag && (draft[addr] = new Cell(cellValue.IncorrectGuess, cellState.Visible));
+      isMisplacedFlag && (draft[addr] = new CellVM(cellValue.IncorrectGuess, cellState.Visible));
     });
   });
 
@@ -74,7 +74,7 @@ export const useField = ({ width, height, minesCount }) => {
 
   const revealCell = ({ isMined }, address) => {
     setField(prevField => isMined ? getBustedField(prevField, draft => {
-      draft[address] = new Cell(cellValue.BustedMine, cellState.Visible);
+      draft[address] = new CellVM(cellValue.BustedMine, cellState.Visible);
     }) : getFloodFilledField(prevField, address));
   };
 

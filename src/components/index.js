@@ -1,4 +1,4 @@
-export * from './CellFactory/CellFactory';
+export * from './Cell/Cell';
 export * from './Field/Field'
 export * from './Footer/Footer';
 export * from './Header/Header';

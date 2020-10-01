@@ -2,7 +2,7 @@ import { immerable } from 'immer';
 
 import { cellValue, cellState } from 'const';
 
-export class Cell {
+export class CellVM {
   [immerable] = true;
 
   constructor(

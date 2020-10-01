@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CellFactory } from '..';
+import { Cell } from '..';
 
 import './Field.scss';
 
@@ -29,7 +29,7 @@ export const Field = ({ width, disabled, state, cellRevealHandler, flagPlantingH
       style={{gridTemplateColumns: `repeat(${width}, 1fr)`}}
       onContextMenu={event => {event.preventDefault();}}
     >
-      {state.map((cell, address) => <CellFactory
+      {state.map((cell, address) => <Cell
         key={address}
         state={cell}
         cellRevealHandler={() => {cellRevealHandler(cell, address);}}

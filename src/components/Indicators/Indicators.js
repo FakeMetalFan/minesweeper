@@ -4,13 +4,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useDidUpdate, useInterval } from 'hooks';
 
-import { formatCount } from 'utils/count-formatter';
-
 import './Indicators.scss';
 
 export const Indicators = ({ minesCount, smileyFaceClickHandler, shouldStartCountingSeconds, isBust, isVictory }) => {
   const [secondsCount, setSecondsCount] = useState(0);
   const [intervalDelay, setIntervalDelay] = useState(null);
+
+  const formatCount = count => {
+    if (count < 1) return '000';
+    if (count < 10) return `00${count}`;
+    if (count < 100) return `0${count}`;
+
+    return `${count}`;
+  };
 
   useDidUpdate(() => {
     shouldStartCountingSeconds && setIntervalDelay(1e3);
