@@ -6,6 +6,5 @@ export const useDidUpdate = (fn, ...deps) => {
   useEffect(() => {
     if (didMount.current) fn();
     else didMount.current = true;
-    // eslint-disable-next-line
   }, deps);
 };

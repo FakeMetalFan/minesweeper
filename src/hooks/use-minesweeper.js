@@ -12,16 +12,13 @@ import { CellVM, CellNeighborsUtils } from 'view-models';
 export const useMinesweeper = ({ width, height, minesCount }) => {
   const length = width * height;
 
-  /* eslint-disable new-parens */
   const emptyState = useMemo(() => Array(length).fill(new CellVM), [length]);
+  const cellNeighborsUtils = useMemo(() => new CellNeighborsUtils(width, height), [width, height]);
 
   const [state, setState] = useState(emptyState);
 
-  const cellNeighborsUtils = useMemo(() => new CellNeighborsUtils(width, height), [width, height]);
-
   const getFloodFilledState = (prevState, address, draftFn) => produce(prevState, draft => {
-    // eslint-disable-next-line
-    draftFn?.(draft);
+    /* eslint-disable-line */ draftFn?.(draft);
 
     draft[address].state = cellState.Visible;
 
