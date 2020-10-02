@@ -12,7 +12,8 @@ import { CellVM, CellNeighborsUtils } from 'view-models';
 export const useMinesweeper = ({ width, height, minesCount }) => {
   const length = width * height;
 
-  const emptyState = useMemo(() => Array(length).fill(new CellVM()), [length]);
+  /* eslint-disable new-parens */
+  const emptyState = useMemo(() => Array(length).fill(new CellVM), [length]);
 
   const [state, setState] = useState(emptyState);
 
@@ -58,7 +59,7 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
   const init = address => {
     setState(prevState => getFloodFilledState(prevState, address, draft => {
       const addresses = difference(range(length), [address, ...cellNeighborsUtils.getAddresses(address)]);
-      const randomAddresses = new Set();
+      const randomAddresses = new Set;
 
       while (randomAddresses.size < minesCount) randomAddresses.add(addresses[Math.random() * addresses.length | 0]);
 
