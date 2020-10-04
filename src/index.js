@@ -5,7 +5,7 @@ import { App } from 'App';
 
 import { setupIcons } from 'setupIcons';
 
-import './index.scss';
+import 'index.scss';
 
 setupIcons();
 
