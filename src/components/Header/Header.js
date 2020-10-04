@@ -8,7 +8,7 @@ export const Header = () => (
   <header>
     <span className='title'>Minesweeper</span>
 
-    <a className='icon' href='https://github.com/FakeMetalFan/minesweeper' target='_blank' rel='noopener noreferrer'>
+    <a href='https://github.com/FakeMetalFan/minesweeper' target='_blank' rel='noopener noreferrer'>
       <FontAwesomeIcon icon={['fab', 'github']} />
     </a>
   </header>

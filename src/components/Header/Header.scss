@@ -7,13 +7,13 @@ header {
   font-size: 22px;
   color: white;
 
-  .title,
-  .icon {
+  span,
+  a {
     flex-grow: 1;
     text-align: right;
   }
 
-  .icon {
+  a {
     padding: 0 16px 0 0;
   }
 }

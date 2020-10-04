@@ -8,7 +8,7 @@ export const Footer = () => (
   <footer>
     <span>
       Powered by
-      <a className='icon' href='https://github.com/FakeMetalFan' target='_blank' rel='noopener noreferrer'>
+      <a href='https://github.com/FakeMetalFan' target='_blank' rel='noopener noreferrer'>
         <FontAwesomeIcon icon={['fab', 'github']} />
       </a>
       &copy;<span>{new Date().getFullYear()}</span>
