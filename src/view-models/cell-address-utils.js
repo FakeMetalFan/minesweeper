@@ -1,4 +1,6 @@
 export class CellAddressUtils {
+  _fieldWidth;
+
   constructor(
     fieldWidth
   ) {

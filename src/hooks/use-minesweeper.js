@@ -4,6 +4,7 @@ import produce from 'immer';
 
 import difference from 'lodash/difference';
 import range from 'lodash/range';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { cellState, cellValue } from 'const';
 
@@ -98,7 +99,7 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
         });
       });
 
-      return prevState;
+      return cloneDeep(prevState);
     });
   };
 

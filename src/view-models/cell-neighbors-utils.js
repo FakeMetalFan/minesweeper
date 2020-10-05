@@ -1,6 +1,10 @@
 import { CellAddressUtils } from './cell-address-utils';
 
 export class CellNeighborsUtils {
+  _fieldWidth;
+  _fieldHeight;
+  _cellAddressUtils;
+
   constructor(
     fieldWidth,
     fieldHeight

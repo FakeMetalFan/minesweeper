@@ -5,6 +5,9 @@ import { cellValue, cellState } from 'const';
 export class CellVM {
   [immerable] = true;
 
+  value;
+  state;
+
   constructor(
     value = cellValue.Empty,
     state = cellState.Hidden
