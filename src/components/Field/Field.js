@@ -23,19 +23,17 @@ export const Field = ({ width, disabled, state, cellRevealHandler, flagPlantingH
     target.addEventListener('mouseup', handleMouseup);
   };
 
-  return (
-    <div
-      className={`field${disabled ? ' disabled' : ''}`}
-      style={{gridTemplateColumns: `repeat(${width}, 1fr)`}}
-      onContextMenu={event => {event.preventDefault();}}
-    >
-      {state.map((cell, address) => <Cell
-        key={address}
-        state={cell}
-        cellRevealHandler={() => {cellRevealHandler(cell, address);}}
-        flagPlantingHandler={event => {handleFlagPlanting(event, cell, address);}}
-        neighborsRevealHandler={event => {handleNeighborsReveal(event, address);}}
-      />)}
-    </div>
-  );
+  return <div
+    className={`field${disabled ? ' disabled' : ''}`}
+    style={{gridTemplateColumns: `repeat(${width}, 1fr)`}}
+    onContextMenu={event => {event.preventDefault();}}
+  >
+    {state.map((cell, address) => <Cell
+      key={address}
+      state={cell}
+      cellRevealHandler={() => {cellRevealHandler(cell, address);}}
+      flagPlantingHandler={event => {handleFlagPlanting(event, cell, address);}}
+      neighborsRevealHandler={event => {handleNeighborsReveal(event, address);}}
+    />)}
+  </div>;
 };

@@ -59,24 +59,22 @@ export const Minesweeper = () => {
     }
   }, state);
 
-  return (
-    <div className='minesweeper'>
-      <Indicators
-        minesCount={remainingMinesCount}
-        isBust={isBust}
-        isVictory={isVictory}
-        shouldStartCountingSeconds={isInit}
-        smileyFaceClickHandler={handleSmileyFaceClick}
-      />
+  return <div className='minesweeper'>
+    <Indicators
+      minesCount={remainingMinesCount}
+      isBust={isBust}
+      isVictory={isVictory}
+      shouldStartCountingSeconds={isInit}
+      smileyFaceClickHandler={handleSmileyFaceClick}
+    />
 
-      <Field
-        width={fieldDimension}
-        disabled={isBust || isVictory}
-        state={state}
-        cellRevealHandler={handleCellReveal}
-        flagPlantingHandler={handleFlagPlanting}
-        neighborsRevealHandler={revealNeighbors}
-      />
-    </div>
-  );
+    <Field
+      width={fieldDimension}
+      disabled={isBust || isVictory}
+      state={state}
+      cellRevealHandler={handleCellReveal}
+      flagPlantingHandler={handleFlagPlanting}
+      neighborsRevealHandler={revealNeighbors}
+    />
+  </div>;
 };

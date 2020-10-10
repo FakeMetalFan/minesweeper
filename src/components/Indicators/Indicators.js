@@ -18,6 +18,12 @@ export const Indicators = ({ minesCount, smileyFaceClickHandler, shouldStartCoun
     return `${count}`;
   };
 
+  const handleSmileyFaceClick = () => {
+    setIntervalDelay(null);
+    setSecondsCount(0);
+    smileyFaceClickHandler();
+  };
+
   useDidUpdate(() => {
     shouldStartCountingSeconds && setIntervalDelay(1e3);
   }, shouldStartCountingSeconds);
@@ -30,17 +36,11 @@ export const Indicators = ({ minesCount, smileyFaceClickHandler, shouldStartCoun
     setSecondsCount(count => count + 1);
   }, intervalDelay);
 
-  return (
-    <div className='indicators'>
-      <div className='mines-count'>{formatCount(minesCount)}</div>
-      <div className='smiley-face' onClick={() => {
-        setIntervalDelay(null);
-        setSecondsCount(0);
-        smileyFaceClickHandler();
-      }}>
-        <FontAwesomeIcon icon={['far', isVictory ? 'smile' : isBust ? 'frown' : 'meh']} />
-      </div>
-      <div className='timer'>{formatCount(secondsCount)}</div>
+  return <div className='indicators'>
+    <div className='mines-count'>{formatCount(minesCount)}</div>
+    <div className='smiley-face' onClick={handleSmileyFaceClick}>
+      <FontAwesomeIcon icon={['far', isVictory ? 'smile' : isBust ? 'frown' : 'meh']} />
     </div>
-  );
+    <div className='timer'>{formatCount(secondsCount)}</div>
+  </div>;
 };
