@@ -15,7 +15,7 @@ export class CellNeighborsUtils {
   }
 
   canFloodFill(state, address) {
-    return !this.getAddresses(address).some(addr => state[addr].isUnrevealedMine);
+    return !this.getAddresses(address).some(addr => state[addr].hasUnrevealedMine);
   }
 
   getAddresses(address) {
@@ -37,11 +37,11 @@ export class CellNeighborsUtils {
   }
 
   getMinedCount(state, address) {
-    return this._getCountBy(state, address, 'isMined');
+    return this._getCountBy(state, address, 'hasMine');
   }
 
   canRevealNeighbors(state, address) {
-    return this.getMinedCount(state, address) === this._getCountBy(state, address, 'isFlagged');
+    return this.getMinedCount(state, address) === this._getCountBy(state, address, 'hasFlag');
   }
 
   _getCountBy(state, address, propName) {

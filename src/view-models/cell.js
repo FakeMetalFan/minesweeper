@@ -16,15 +16,15 @@ export class CellVM {
     this.state = state;
   }
 
-  get isMined() {
+  get hasMine() {
     return this.value === cellValue.Mine;
   }
 
-  get isBustedMine() {
+  get hasBustedMine() {
     return this.value === cellValue.BustedMine;
   }
 
-  get isIncorrectGuess() {
+  get hasGuessedIncorrectly() {
     return this.value === cellValue.IncorrectGuess;
   }
 
@@ -36,15 +36,15 @@ export class CellVM {
     return this.state === cellState.Hidden;
   }
 
-  get isFlagged() {
+  get hasFlag() {
     return this.state === cellState.Flagged;
   }
 
-  get isMisplacedFlag() {
-    return !this.isMined && this.isFlagged;
+  get hasMisplacedFlag() {
+    return !this.hasMine && this.hasFlag;
   }
 
-  get isUnrevealedMine() {
-    return this.isMined && !this.isFlagged;
+  get hasUnrevealedMine() {
+    return this.hasMine && !this.hasFlag;
   }
 }

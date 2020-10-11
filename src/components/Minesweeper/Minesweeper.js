@@ -39,7 +39,7 @@ export const Minesweeper = () => {
 
   const handleFlagPlanting = (cell, address) => {
     plantFlag(cell, address);
-    setRemainingMinesCount(remainingMinesCount + (cell.isFlagged ? 1 : -1));
+    setRemainingMinesCount(remainingMinesCount + (cell.hasFlag ? 1 : -1));
   };
 
   const handleSmileyFaceClick = () => {
@@ -51,8 +51,8 @@ export const Minesweeper = () => {
   };
 
   useDidUpdate(() => {
-    if (some(state, 'isBustedMine')) setIsBust(true);
-    else if (!some(reject(state, 'isMined'), 'isHidden')) {
+    if (some(state, 'hasBustedMine')) setIsBust(true);
+    else if (!some(reject(state, 'hasMine'), 'isHidden')) {
       markMines();
       setRemainingMinesCount(0);
       setIsVictory(true);

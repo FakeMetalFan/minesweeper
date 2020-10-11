@@ -26,9 +26,9 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
     const floodFill = cellAddr => {
       cellNeighborsUtils.canFloodFill(draft, cellAddr) && cellNeighborsUtils.getAddresses(cellAddr).forEach(addr => {
         const cell = draft[addr];
-        const { isMined, isHidden, isFlagged } = cell;
+        const { hasMine, isHidden, hasFlag } = cell;
 
-        if (!isMined && isHidden && !isFlagged) {
+        if (!hasMine && isHidden && !hasFlag) {
           cell.state = cellState.Visible;
 
           floodFill(addr);
@@ -43,10 +43,10 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
     draftFn(draft);
 
     draft.forEach((cell, addr) => {
-      const { isUnrevealedMine, isMisplacedFlag } = cell;
+      const { hasUnrevealedMine, hasMisplacedFlag } = cell;
 
-      isUnrevealedMine && (cell.state = cellState.Visible);
-      isMisplacedFlag && (draft[addr] = new CellVM(cellValue.IncorrectGuess, cellState.Visible));
+      hasUnrevealedMine && (cell.state = cellState.Visible);
+      hasMisplacedFlag && (draft[addr] = new CellVM(cellValue.IncorrectGuess, cellState.Visible));
     });
   });
 
@@ -66,20 +66,20 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
       });
 
       draft.forEach((cell, addr) => {
-        !cell.isMined && (cell.value = cellNeighborsUtils.getMinedCount(draft, addr));
+        !cell.hasMine && (cell.value = cellNeighborsUtils.getMinedCount(draft, addr));
       });
     }));
   };
 
-  const revealCell = ({ isMined }, address) => {
-    setState(prevState => isMined ? getBustedState(prevState, draft => {
+  const revealCell = ({ hasMine }, address) => {
+    setState(prevState => hasMine ? getBustedState(prevState, draft => {
       draft[address] = new CellVM(cellValue.BustedMine, cellState.Visible);
     }) : getFloodFilledState(prevState, address));
   };
 
-  const plantFlag = ({ isFlagged }, address) => {
+  const plantFlag = ({ hasFlag }, address) => {
     setState(prevState => produce(prevState, draft => {
-      draft[address].state = cellState[isFlagged ? 'Hidden' : 'Flagged'];
+      draft[address].state = cellState[hasFlag ? 'Hidden' : 'Flagged'];
     }));
   };
 
@@ -90,10 +90,10 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
       if (cellNeighborsUtils.canRevealNeighbors(prevState, address)) return getBustedState(prevState, draft => {
         cellNeighborsUtils.getAddresses(address).forEach(addr => {
           const cell = draft[addr];
-          const { isUnrevealedMine, isMisplacedFlag } = cell;
+          const { hasUnrevealedMine, hasMisplacedFlag } = cell;
 
-          isUnrevealedMine && (cell.value = cellValue.BustedMine);
-          isMisplacedFlag && (cell.value = cellValue.IncorrectGuess);
+          hasUnrevealedMine && (cell.value = cellValue.BustedMine);
+          hasMisplacedFlag && (cell.value = cellValue.IncorrectGuess);
 
           cell.state = cellState.Visible;
         });
@@ -106,7 +106,7 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
   const markMines = () => {
     setState(prevState => produce(prevState, draft => {
       draft.forEach(cell => {
-        cell.isMined && (cell.state = cellState.Flagged);
+        cell.hasMine && (cell.state = cellState.Flagged);
       });
     }));
   };
