@@ -8,7 +8,7 @@ import './Indicators.scss';
 
 export const Indicators = ({ minesCount, smileyFaceClickHandler, shouldStartCountingSeconds, isBust, isVictory }) => {
   const [secondsCount, setSecondsCount] = useState(0);
-  const [intervalDelay, setIntervalDelay] = useState(null);
+  const [isCountingSeconds, setIsCountingSeconds] = useState(false);
 
   const formatCount = count => {
     if (count < 1) return '000';
@@ -19,22 +19,22 @@ export const Indicators = ({ minesCount, smileyFaceClickHandler, shouldStartCoun
   };
 
   const handleSmileyFaceClick = () => {
-    setIntervalDelay(null);
+    setIsCountingSeconds(false);
     setSecondsCount(0);
     smileyFaceClickHandler();
   };
 
   useDidUpdate(() => {
-    shouldStartCountingSeconds && setIntervalDelay(1e3);
+    shouldStartCountingSeconds && setIsCountingSeconds(true);
   }, shouldStartCountingSeconds);
 
   useDidUpdate(() => {
-    (isBust || isVictory) && setIntervalDelay(null);
+    (isBust || isVictory) && setIsCountingSeconds(false);
   }, isBust, isVictory);
 
   useInterval(() => {
     setSecondsCount(count => count + 1);
-  }, intervalDelay);
+  }, isCountingSeconds ? 1e3 : null);
 
   return <div className='indicators'>
     <div className='mines-count'>{formatCount(minesCount)}</div>
