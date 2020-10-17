@@ -45,7 +45,7 @@ export class CellNeighborsUtils {
   }
 
   _getCountBy(state, address, propName) {
-    return this.getAddresses(address).reduce((acc, adr) => state[adr][propName] ? acc + 1 : acc, 0);
+    return this.getAddresses(address).reduce((ac, adr) => state[adr][propName] ? ac + 1 : ac, 0);
   }
 
   _doesAddressExist(address, criteria) {
