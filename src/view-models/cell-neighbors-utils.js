@@ -15,7 +15,7 @@ export class CellNeighborsUtils {
   }
 
   canFloodFill(state, address) {
-    return !this.getAddresses(address).some(addr => state[addr].hasUnrevealedMine);
+    return !this.getAddresses(address).some(adr => state[adr].hasUnrevealedMine);
   }
 
   getAddresses(address) {
@@ -25,12 +25,12 @@ export class CellNeighborsUtils {
     for (let rowAddressOffset = -1; rowAddressOffset < 2; rowAddressOffset++)
       for (let cellAddressOffset = -1; cellAddressOffset < 2; cellAddressOffset++)
         if (rowAddressOffset || cellAddressOffset) {
-          const rowAddressWithOffset = rowAddress + rowAddressOffset;
-          const colAddressWithOffset = colAddress + cellAddressOffset;
+          const rowAddressAhead = rowAddress + rowAddressOffset;
+          const colAddressAhead = colAddress + cellAddressOffset;
 
-          this._doesAddressExist(rowAddressWithOffset, this._fieldWidth)
-            && this._doesAddressExist(colAddressWithOffset, this._fieldHeight)
-              && addresses.push(this._cellAddressUtils.to1DAddress(rowAddressWithOffset, colAddressWithOffset));
+          this._doesAddressExist(rowAddressAhead, this._fieldWidth)
+            && this._doesAddressExist(colAddressAhead, this._fieldHeight)
+              && addresses.push(this._cellAddressUtils.to1DAddress(rowAddressAhead, colAddressAhead));
         }
 
     return addresses;
@@ -45,7 +45,7 @@ export class CellNeighborsUtils {
   }
 
   _getCountBy(state, address, propName) {
-    return this.getAddresses(address).reduce((acc, addr) => state[addr][propName] ? acc + 1 : acc, 0);
+    return this.getAddresses(address).reduce((acc, adr) => state[adr][propName] ? acc + 1 : acc, 0);
   }
 
   _doesAddressExist(address, criteria) {

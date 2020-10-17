@@ -23,15 +23,15 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
 
     draft[address].state = cellState.Visible;
 
-    const floodFill = cellAddr => {
-      cellNeighborsUtils.canFloodFill(draft, cellAddr) && cellNeighborsUtils.getAddresses(cellAddr).forEach(addr => {
-        const cell = draft[addr];
+    const floodFill = cellAdr => {
+      cellNeighborsUtils.canFloodFill(draft, cellAdr) && cellNeighborsUtils.getAddresses(cellAdr).forEach(adr => {
+        const cell = draft[adr];
         const { hasMine, isHidden, hasFlag } = cell;
 
         if (!hasMine && isHidden && !hasFlag) {
           cell.state = cellState.Visible;
 
-          floodFill(addr);
+          floodFill(adr);
         }
       });
     };
@@ -42,11 +42,11 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
   const getBustedState = (prevState, draftFn) => produce(prevState, draft => {
     draftFn(draft);
 
-    draft.forEach((cell, addr) => {
+    draft.forEach((cell, adr) => {
       const { hasUnrevealedMine, hasMisplacedFlag } = cell;
 
       hasUnrevealedMine && (cell.state = cellState.Visible);
-      hasMisplacedFlag && (draft[addr] = new CellVM(cellValue.IncorrectGuess, cellState.Visible));
+      hasMisplacedFlag && (draft[adr] = new CellVM(cellValue.IncorrectGuess, cellState.Visible));
     });
   });
 
@@ -61,12 +61,12 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
 
       while (randomAddresses.size < minesCount) randomAddresses.add(addresses[Math.random() * addresses.length | 0]);
 
-      randomAddresses.forEach(addr => {
-        draft[addr].value = cellValue.Mine;
+      randomAddresses.forEach(adr => {
+        draft[adr].value = cellValue.Mine;
       });
 
-      draft.forEach((cell, addr) => {
-        !cell.hasMine && (cell.value = cellNeighborsUtils.getMinedCount(draft, addr));
+      draft.forEach((cell, adr) => {
+        !cell.hasMine && (cell.value = cellNeighborsUtils.getMinedCount(draft, adr));
       });
     }));
   };
@@ -88,8 +88,8 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
       if (cellNeighborsUtils.canFloodFill(prevState, address)) return getFloodFilledState(prevState, address);
 
       if (cellNeighborsUtils.canRevealNeighbors(prevState, address)) return getBustedState(prevState, draft => {
-        cellNeighborsUtils.getAddresses(address).forEach(addr => {
-          const cell = draft[addr];
+        cellNeighborsUtils.getAddresses(address).forEach(adr => {
+          const cell = draft[adr];
           const { hasUnrevealedMine, hasMisplacedFlag } = cell;
 
           hasUnrevealedMine && (cell.value = cellValue.BustedMine);
