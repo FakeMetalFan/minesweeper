@@ -23,10 +23,10 @@ export class CellNeighborsUtils {
     const addresses = [];
 
     for (let rowAddressOffset = -1; rowAddressOffset < 2; rowAddressOffset++)
-      for (let cellAddressOffset = -1; cellAddressOffset < 2; cellAddressOffset++)
-        if (rowAddressOffset || cellAddressOffset) {
+      for (let colAddressOffset = -1; colAddressOffset < 2; colAddressOffset++)
+        if (rowAddressOffset || colAddressOffset) {
           const rowAddressAhead = rowAddress + rowAddressOffset;
-          const colAddressAhead = colAddress + cellAddressOffset;
+          const colAddressAhead = colAddress + colAddressOffset;
 
           this._doesAddressExist(rowAddressAhead, this._fieldWidth)
             && this._doesAddressExist(colAddressAhead, this._fieldHeight)
