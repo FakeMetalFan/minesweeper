@@ -5,35 +5,29 @@ import { Cell } from '..';
 import './Field.scss';
 
 export const Field = ({ width, disabled, state, cellRevealHandler, flagPlantingHandler, neighborsRevealHandler }) => {
-  const handleFlagPlanting = (event, cell, address) => {
-    event.preventDefault();
+  const handleNeighborsReveal = ({ target, nativeEvent: { which } }, address) => {
+    if (!disabled) {
+      const handleMouseup = event => {
+        which !== event.which && neighborsRevealHandler(address);
 
-    flagPlantingHandler(cell, address);
-  };
+        target.removeEventListener('mouseup', handleMouseup);
+      };
 
-  const handleNeighborsReveal = ({ target, nativeEvent }, address) => {
-    const { which } = nativeEvent;
-
-    const handleMouseup = event => {
-      which !== event.which && neighborsRevealHandler(address);
-
-      target.removeEventListener('mouseup', handleMouseup);
-    };
-
-    target.addEventListener('mouseup', handleMouseup);
+      target.addEventListener('mouseup', handleMouseup);
+    }
   };
 
   return <div
     className={`field${disabled ? ' disabled' : ''}`}
     style={{gridTemplateColumns: `repeat(${width}, 1fr)`}}
-    onContextMenu={event => {event.preventDefault();}}
+    onContextMenu={event => { event.preventDefault(); }}
   >
     {state.map((cell, address) => <Cell
       key={address}
       state={cell}
-      cellRevealHandler={() => {cellRevealHandler(cell, address);}}
-      flagPlantingHandler={event => {handleFlagPlanting(event, cell, address);}}
-      neighborsRevealHandler={event => {handleNeighborsReveal(event, address);}}
+      cellRevealHandler={() => { !disabled && cellRevealHandler(cell, address); }}
+      flagPlantingHandler={() => { !disabled && flagPlantingHandler(cell, address); }}
+      neighborsRevealHandler={event => { handleNeighborsReveal(event, address); }}
     />)}
   </div>;
 };

@@ -1,63 +1,67 @@
 import React, { useState } from 'react';
 
+import produce from 'immer';
+
 import reject from 'lodash/reject';
 import some from 'lodash/some';
 
-import { useMinesweeper, useDidUpdate } from 'hooks';
+import { useField, useDidUpdate } from 'hooks';
 
 import { Field, Indicators } from '..';
 
 import './Minesweeper.scss';
 
-export const Minesweeper = () => {
-  const fieldDimension = 16;
-  const minesCount = 30;
-
+export const Minesweeper = ({ minesCount, fieldDimension }) => {
   const {
-    state,
-    clear,
+    state: fieldState,
+    reset,
     init,
     revealCell,
     plantFlag,
     revealNeighbors,
     markMines,
-  } = useMinesweeper({ minesCount, width: fieldDimension, height: fieldDimension });
+  } = useField({ minesCount, width: fieldDimension, height: fieldDimension });
 
-  const [remainingMinesCount, setRemainingMinesCount] = useState(minesCount);
+  const initialState = { remainingMinesCount: minesCount, isInit: false, isBust: false, isVictory: false };
 
-  const [isInit, setIsInit] = useState(false);
-  const [isBust, setIsBust] = useState(false);
-  const [isVictory, setIsVictory] = useState(false);
+  const [state, setState] = useState(initialState);
+
+  const { remainingMinesCount, isInit, isBust, isVictory } = state;
 
   const handleCellReveal = (cell, address) => {
     if (isInit) revealCell(cell, address);
     else {
       init(address)
-      setIsInit(true);
+      setState(produce(state, draft => {
+        draft.isInit = true;
+      }));
     }
   };
 
   const handleFlagPlanting = (cell, address) => {
     plantFlag(cell, address);
-    setRemainingMinesCount(remainingMinesCount + (cell.hasFlag ? 1 : -1));
+    setState(produce(state, draft => {
+      draft.remainingMinesCount += cell.hasFlag ? 1 : -1;
+    }));
   };
 
   const handleSmileyFaceClick = () => {
-    clear();
-    setRemainingMinesCount(minesCount);
-    setIsInit(false);
-    setIsBust(false);
-    setIsVictory(false);
+    reset();
+    setState({ ...initialState });
   };
 
   useDidUpdate(() => {
-    if (some(state, 'hasBustedMine')) setIsBust(true);
-    else if (!some(reject(state, 'hasMine'), 'isHidden')) {
+    if (some(fieldState, 'hasBustedMine')) setState(produce(state, draft => {
+      draft.isBust = true;
+    }));
+    else if (!some(reject(fieldState, 'hasMine'), 'isHidden')) {
       markMines();
-      setRemainingMinesCount(0);
-      setIsVictory(true);
+      setState(produce(state, draft => {
+        draft.remainingMinesCount = 0;
+        draft.isVictory = true;
+      }));
     }
-  }, state);
+  }, fieldState);
 
   return <div className='minesweeper'>
     <Indicators
@@ -71,7 +75,7 @@ export const Minesweeper = () => {
     <Field
       width={fieldDimension}
       disabled={isBust || isVictory}
-      state={state}
+      state={fieldState}
       cellRevealHandler={handleCellReveal}
       flagPlantingHandler={handleFlagPlanting}
       neighborsRevealHandler={revealNeighbors}

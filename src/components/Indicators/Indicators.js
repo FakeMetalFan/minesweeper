@@ -33,7 +33,7 @@ export const Indicators = ({ minesCount, smileyFaceClickHandler, shouldStartCoun
   }, isBust, isVictory);
 
   useInterval(() => {
-    setSecondsCount(count => count + 1);
+    setSecondsCount(secondsCount + 1);
   }, isCountingSeconds ? 1e3 : null);
 
   return <div className='indicators'>

@@ -14,9 +14,12 @@ $cell-dimension: 28px;
 .cell {
   width: $cell-dimension;
   height: $cell-dimension;
+  line-height: $cell-dimension;
   border: none;
-  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 18px;
+  font-weight: bold;
+  text-align: center;
   cursor: pointer;
   background-color: #bdbdbd;
   outline: none;

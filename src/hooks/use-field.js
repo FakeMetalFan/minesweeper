@@ -4,13 +4,12 @@ import produce from 'immer';
 
 import difference from 'lodash/difference';
 import range from 'lodash/range';
-import cloneDeep from 'lodash/cloneDeep';
 
 import { cellState, cellValue } from 'const';
 
 import { CellVM, CellNeighborsUtils } from 'view-models';
 
-export const useMinesweeper = ({ width, height, minesCount }) => {
+export const useField = ({ width, height, minesCount }) => {
   const length = width * height;
 
   const emptyState = useMemo(() => Array(length).fill(new CellVM), [length]);
@@ -50,12 +49,12 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
     });
   });
 
-  const clear = () => {
+  const reset = () => {
     setState(emptyState);
   };
 
   const init = address => {
-    setState(prevState => getFloodFilledState(prevState, address, draft => {
+    setState(getFloodFilledState(state, address, draft => {
       const addresses = difference(range(length), [address, ...cellNeighborsUtils.getAddresses(address)]);
       const randomAddresses = new Set;
 
@@ -72,22 +71,22 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
   };
 
   const revealCell = ({ hasMine }, address) => {
-    setState(prevState => hasMine ? getBustedState(prevState, draft => {
+    setState(hasMine ? getBustedState(state, draft => {
       draft[address] = new CellVM(cellValue.BustedMine, cellState.Visible);
-    }) : getFloodFilledState(prevState, address));
+    }) : getFloodFilledState(state, address));
   };
 
   const plantFlag = ({ hasFlag }, address) => {
-    setState(prevState => produce(prevState, draft => {
+    setState(produce(state, draft => {
       draft[address].state = cellState[hasFlag ? 'Hidden' : 'Flagged'];
     }));
   };
 
   const revealNeighbors = address => {
-    setState(prevState => {
-      if (cellNeighborsUtils.canFloodFill(prevState, address)) return getFloodFilledState(prevState, address);
+    setState(() => {
+      if (cellNeighborsUtils.canFloodFill(state, address)) return getFloodFilledState(state, address);
 
-      if (cellNeighborsUtils.canRevealNeighbors(prevState, address)) return getBustedState(prevState, draft => {
+      if (cellNeighborsUtils.canRevealNeighbors(state, address)) return getBustedState(state, draft => {
         cellNeighborsUtils.getAddresses(address).forEach(adr => {
           const cell = draft[adr];
           const { hasUnrevealedMine, hasMisplacedFlag } = cell;
@@ -99,17 +98,17 @@ export const useMinesweeper = ({ width, height, minesCount }) => {
         });
       });
 
-      return cloneDeep(prevState);
+      return state;
     });
   };
 
   const markMines = () => {
-    setState(prevState => produce(prevState, draft => {
+    setState(produce(state, draft => {
       draft.forEach(cell => {
         cell.hasMine && (cell.state = cellState.Flagged);
       });
     }));
   };
 
-  return { state, clear, init, revealCell, plantFlag, revealNeighbors, markMines };
+  return { state, reset, init, revealCell, plantFlag, revealNeighbors, markMines };
 };

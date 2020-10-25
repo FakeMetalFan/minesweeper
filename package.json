@@ -22,6 +22,7 @@
   "scripts": {
     "start": "react-scripts start",
     "test": "react-scripts test",
+    "code-coverage": "react-scripts test --coverage --watchAll=false",
     "build": "react-scripts build",
     "deploy": "npm run build && gh-pages -d build"
   },

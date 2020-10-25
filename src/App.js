@@ -4,6 +4,6 @@ import { Header, Minesweeper, Footer } from 'components';
 
 export const App = () => <>
   <Header />
-  <Minesweeper />
+  <Minesweeper minesCount={30} fieldDimension={16} />
   <Footer />
 </>;

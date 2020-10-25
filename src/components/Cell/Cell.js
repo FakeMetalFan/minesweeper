@@ -7,21 +7,21 @@ import './Cell.scss';
 export const Cell = memo(({ state, cellRevealHandler, flagPlantingHandler, neighborsRevealHandler }) => {
   const { isHidden, hasFlag, isEmpty, hasMine, hasGuessedIncorrectly, hasBustedMine, value } = state;
 
-  if (isHidden) return <button className='cell' onClick={cellRevealHandler} onContextMenu={flagPlantingHandler} />;
+  if (isHidden) return <div className='cell' onClick={cellRevealHandler} onContextMenu={flagPlantingHandler} />;
 
-  if (hasFlag) return <button className='cell' onContextMenu={flagPlantingHandler}>
+  if (hasFlag) return <div className='cell' onContextMenu={flagPlantingHandler}>
     <FontAwesomeIcon icon={['far', 'flag']} />
-  </button>;
+  </div>;
 
-  if (isEmpty) return <button className='cell cell__visible' />;
+  if (isEmpty) return <div className='cell cell__visible' />;
 
-  if (hasMine || hasGuessedIncorrectly || hasBustedMine) return <button
+  if (hasMine || hasGuessedIncorrectly || hasBustedMine) return <div
     className={`cell ${hasGuessedIncorrectly ? 'cell__incorrect-guess' : hasBustedMine ? 'cell__busted-mine' : ''}`}
   >
     <FontAwesomeIcon icon={['fas', 'bomb']} />
-  </button>;
+  </div>;
 
-  return <button className={`cell cell__visible cell__visible__${value}`} onMouseDown={neighborsRevealHandler}>
+  return <div className={`cell cell__visible cell__visible__${value}`} onMouseDown={neighborsRevealHandler}>
     {value}
-  </button>;
+  </div>;
 });
