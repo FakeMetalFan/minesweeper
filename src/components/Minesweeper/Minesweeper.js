@@ -85,14 +85,13 @@ export const Minesweeper = ({ minesCount, fieldDimension }) => {
       minesCount={hiddenMinesCount}
       isBust={isBust}
       isVictory={isVictory}
-      shouldStartCountingSeconds={isInit && !(isBust || isVictory)}
+      isCountingSeconds={isInit && !(isBust || isVictory)}
       smileyFaceClickHandler={handleSmileyFaceClick}
     />
-
     <Field
       width={fieldDimension}
       disabled={isBust || isVictory}
-      state={field}
+      field={field}
       cellRevealHandler={handleCellReveal}
       flagPlantingHandler={handleFlagPlanting}
       neighborsRevealHandler={revealNeighbors}

@@ -8,25 +8,25 @@ import { cellValue } from 'const';
 
 import './Cell.scss';
 
-export const Cell = memo(({ state, cellRevealHandler, flagPlantingHandler, neighborsRevealHandler }) => {
-  const { value } = state;
+export const Cell = memo(({ cell, cellRevealHandler, flagPlantingHandler, neighborsRevealHandler }) => {
+  const { value } = cell;
 
   const hasGuessedIncorrectly = value === cellValue.IncorrectGuess;
-  const hasBustedMine = isBustedCell(state);
+  const hasBustedMine = isBustedCell(cell);
 
-  if (isHiddenCell(state)) return <div
+  if (isHiddenCell(cell)) return <div
     className='cell'
     onClick={cellRevealHandler}
     onContextMenu={flagPlantingHandler}
   />;
 
-  if (isFlaggedCell(state)) return <div className='cell' onContextMenu={flagPlantingHandler}>
+  if (isFlaggedCell(cell)) return <div className='cell' onContextMenu={flagPlantingHandler}>
     <FontAwesomeIcon icon={['far', 'flag']} />
   </div>;
 
   if (value === cellValue.Empty) return <div className='cell cell__visible' />;
 
-  if (isMinedCell(state) || hasGuessedIncorrectly || hasBustedMine) return <div
+  if (isMinedCell(cell) || hasGuessedIncorrectly || hasBustedMine) return <div
     className={`cell ${hasGuessedIncorrectly ? 'cell__incorrect-guess' : hasBustedMine ? 'cell__busted-mine' : ''}`}
   >
     <FontAwesomeIcon icon={['fas', 'bomb']} />

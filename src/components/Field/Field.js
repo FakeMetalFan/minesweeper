@@ -4,7 +4,7 @@ import { Cell } from '..';
 
 import './Field.scss';
 
-export const Field = ({ width, disabled, state, cellRevealHandler, flagPlantingHandler, neighborsRevealHandler }) => {
+export const Field = ({ width, disabled, field, cellRevealHandler, flagPlantingHandler, neighborsRevealHandler }) => {
   const handleNeighborsReveal = ({ target, nativeEvent: { which } }, address) => {
     if (!disabled) {
       const handleMouseup = event => {
@@ -22,9 +22,9 @@ export const Field = ({ width, disabled, state, cellRevealHandler, flagPlantingH
     style={{gridTemplateColumns: `repeat(${width}, 1fr)`}}
     onContextMenu={event => { event.preventDefault(); }}
   >
-    {state.map((cell, address) => <Cell
+    {field.map((cell, address) => <Cell
       key={address}
-      state={cell}
+      cell={cell}
       cellRevealHandler={() => { !disabled && cellRevealHandler(cell, address); }}
       flagPlantingHandler={() => { !disabled && flagPlantingHandler(cell, address); }}
       neighborsRevealHandler={event => { handleNeighborsReveal(event, address); }}

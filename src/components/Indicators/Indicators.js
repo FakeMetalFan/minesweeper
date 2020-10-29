@@ -6,7 +6,7 @@ import { useInterval } from 'hooks';
 
 import './Indicators.scss';
 
-export const Indicators = ({ minesCount, smileyFaceClickHandler, shouldStartCountingSeconds, isBust, isVictory }) => {
+export const Indicators = ({ minesCount, smileyFaceClickHandler, isCountingSeconds, isBust, isVictory }) => {
   const [secondsCount, setSecondsCount] = useState(0);
 
   const formatCount = count => {
@@ -24,7 +24,7 @@ export const Indicators = ({ minesCount, smileyFaceClickHandler, shouldStartCoun
 
   useInterval(() => {
     setSecondsCount(secondsCount + 1);
-  }, shouldStartCountingSeconds ? 1e3 : null);
+  }, isCountingSeconds ? 1e3 : null);
 
   return <div className='indicators'>
     <div className='mines-count'>{formatCount(minesCount)}</div>
