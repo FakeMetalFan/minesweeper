@@ -15,6 +15,7 @@ export const Minesweeper = ({ minesCount, fieldDimension }) => {
   const [isBust, setIsBust] = useState(false);
   const [isVictory, setIsVictory] = useState(false);
   const [hiddenMinesCount, setHiddenMinesCount] = useState(minesCount);
+
   const {
     field,
     reset,
