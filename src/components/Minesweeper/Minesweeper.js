@@ -1,6 +1,4 @@
-import React, { useReducer } from 'react';
-
-import produce from 'immer';
+import React, { useState } from 'react';
 
 import reject from 'lodash/reject';
 
@@ -12,38 +10,11 @@ import { Field, Indicators } from '..';
 
 import './Minesweeper.scss';
 
-const actionType = {
-  Init: 'init',
-  HiddenMinesCountUpdate: 'hidden-mines-count-update',
-  Reset: 'reset',
-  Bust: 'bust',
-  Victory: 'victory',
-};
-
-const reducer = (state, { type, payload }) => type === actionType.Reset ? { ...payload } : produce(state, draft => {
-  switch (type) {
-    case actionType.Init:
-      draft.isInit = true;
-
-      break;
-    case actionType.HiddenMinesCountUpdate:
-      draft.hiddenMinesCount += payload;
-
-      break;
-    case actionType.Bust:
-      draft.isBust = true;
-
-      break;
-    case actionType.Victory:
-      draft.hiddenMinesCount = 0;
-      draft.isVictory = true;
-  }
-});
-
 export const Minesweeper = ({ minesCount, fieldDimension }) => {
-  const initialState = { hiddenMinesCount: minesCount, isInit: false, isBust: false, isVictory: false };
-
-  const [{ hiddenMinesCount, isInit, isBust, isVictory }, dispatch] = useReducer(reducer, initialState);
+  const [isInit, setIsInit] = useState(false);
+  const [isBust, setIsBust] = useState(false);
+  const [isVictory, setIsVictory] = useState(false);
+  const [hiddenMinesCount, setHiddenMinesCount] = useState(minesCount);
   const {
     field,
     reset,
@@ -57,26 +28,29 @@ export const Minesweeper = ({ minesCount, fieldDimension }) => {
   const handleCellReveal = (cell, address) => {
     if (isInit) revealCell(cell, address);
     else {
-      init(address)
-      dispatch({ type: actionType.Init });
+      init(address);
+      setIsInit(true);
     }
   };
 
   const handleFlagPlanting = (cell, address) => {
     plantFlag(cell, address);
-    dispatch({ type: actionType.HiddenMinesCountUpdate, payload: isFlaggedCell(cell) ? 1 : -1 });
+    setHiddenMinesCount(hiddenMinesCount + isFlaggedCell(cell) ? 1 : -1);
   };
 
   const handleSmileyFaceClick = () => {
     reset();
-    dispatch({ type: actionType.Reset, payload: initialState });
+    setIsInit(false);
+    setIsBust(false);
+    setIsVictory(false);
+    setHiddenMinesCount(minesCount);
   };
 
   useDidUpdate(() => {
-    if (field.some(isBustedCell)) dispatch({ type: actionType.Bust });
+    if (field.some(isBustedCell)) setIsBust(true);
     else if (!reject(field, isMinedCell).some(isHiddenCell)) {
       markMines();
-      dispatch({ type: actionType.Victory });
+      setIsVictory(true);
     }
   }, field);
 
