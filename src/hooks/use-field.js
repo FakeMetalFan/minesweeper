@@ -16,6 +16,7 @@ export const useField = ({ width, height, minesCount }) => {
 
   const cellNeighborsUtils = useMemo(() => new CellNeighborsUtils(width, height), [length]);
   const emptyField = useMemo(() => Array(length).fill({ value: cellValue.Empty, state: cellState.Hidden }), [length]);
+
   const [field, setField] = useState(emptyField);
 
   const getFloodFilledField = (address, draftFn) => produce(field, draft => {
