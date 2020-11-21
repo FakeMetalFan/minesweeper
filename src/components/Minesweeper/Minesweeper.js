@@ -36,7 +36,7 @@ export const Minesweeper = ({ minesCount, fieldDimension }) => {
 
   const handleFlagPlanting = (cell, address) => {
     plantFlag(cell, address);
-    setHiddenMinesCount(hiddenMinesCount + isFlaggedCell(cell) ? 1 : -1);
+    setHiddenMinesCount(hiddenMinesCount + (isFlaggedCell(cell) ? 1 : -1));
   };
 
   const handleSmileyFaceClick = () => {
