@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/minesweeper/static/css/main.b15096a6.chunk.css",
-    "main.js": "/minesweeper/static/js/main.0961974b.chunk.js",
-    "main.js.map": "/minesweeper/static/js/main.0961974b.chunk.js.map",
+    "main.css": "/minesweeper/static/css/main.0db6a047.chunk.css",
+    "main.js": "/minesweeper/static/js/main.a13bf306.chunk.js",
+    "main.js.map": "/minesweeper/static/js/main.a13bf306.chunk.js.map",
     "runtime-main.js": "/minesweeper/static/js/runtime-main.ac5ff41f.js",
     "runtime-main.js.map": "/minesweeper/static/js/runtime-main.ac5ff41f.js.map",
     "static/js/2.c806b274.chunk.js": "/minesweeper/static/js/2.c806b274.chunk.js",
     "static/js/2.c806b274.chunk.js.map": "/minesweeper/static/js/2.c806b274.chunk.js.map",
     "index.html": "/minesweeper/index.html",
-    "static/css/main.b15096a6.chunk.css.map": "/minesweeper/static/css/main.b15096a6.chunk.css.map",
+    "static/css/main.0db6a047.chunk.css.map": "/minesweeper/static/css/main.0db6a047.chunk.css.map",
     "static/js/2.c806b274.chunk.js.LICENSE.txt": "/minesweeper/static/js/2.c806b274.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.ac5ff41f.js",
     "static/js/2.c806b274.chunk.js",
-    "static/css/main.b15096a6.chunk.css",
-    "static/js/main.0961974b.chunk.js"
+    "static/css/main.0db6a047.chunk.css",
+    "static/js/main.a13bf306.chunk.js"
   ]
 }
