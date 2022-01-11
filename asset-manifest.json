@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/minesweeper/static/js/main.4bf11d69.js",
+    "main.js": "/minesweeper/static/js/main.ef928d58.js",
     "index.html": "/minesweeper/index.html",
-    "main.4bf11d69.js.map": "/minesweeper/static/js/main.4bf11d69.js.map"
+    "main.ef928d58.js.map": "/minesweeper/static/js/main.ef928d58.js.map"
   },
   "entrypoints": [
-    "static/js/main.4bf11d69.js"
+    "static/js/main.ef928d58.js"
   ]
 }
