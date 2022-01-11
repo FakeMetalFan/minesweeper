@@ -17,10 +17,11 @@ import {
   OpenedCellProps,
 } from '.';
 
-const RED_COLOR = '#ff0d72';
-
 const getCellBackgroundColor = (lightenAmount = 0) =>
   lighten(lightenAmount, BACKGROUND_COLOR);
+
+const getRedColor = (darkenAmount = 0) =>
+  darken(darkenAmount, '#ff0d72');
 
 export const Default = styled.button`
   background-color: ${getCellBackgroundColor()};
@@ -54,7 +55,7 @@ export const Mined = styled(Default)<MinedCellProps>`
   }) => {
     if (busted) {
       return css`
-        background-color: ${darken(.2, RED_COLOR)};
+        background-color: ${getRedColor(.2)};
       `;
     }
   }}
@@ -68,10 +69,10 @@ export const Mined = styled(Default)<MinedCellProps>`
 
         &::before,
         &::after {
-          background: ${RED_COLOR};
+          background: ${getRedColor(.2)};
           content: '';
           height: 100%;
-          left: 45%;
+          left: 11px;
           position: absolute;
           top: 0;
           width: 2px;
@@ -96,7 +97,7 @@ const getValueColor = (value: number) => {
     case 2:
       return '#0dff72';
     case 3:
-      return RED_COLOR;
+      return getRedColor();
     case 4:
       return '#3877ff';
     case 5:
