@@ -1,5 +1,8 @@
-type Cell = {
+type Unique<T extends Record<string, unknown>> = T & {
   id: string;
+};
+
+type Cell = {
   value: number;
   mined: boolean;
   visible: boolean;
@@ -24,7 +27,7 @@ type Status = {
 };
 
 type Minesweeper = {
-  field: Cell[];
+  field: Unique<Cell>[];
   settings: Settings;
   status: Status;
 };

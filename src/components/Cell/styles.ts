@@ -11,12 +11,6 @@ import {
   BACKGROUND_COLOR,
 } from 'styles';
 
-import {
-  HiddenCellProps,
-  MinedCellProps,
-  OpenedCellProps,
-} from '.';
-
 const getCellBackgroundColor = (lightenAmount = 0) =>
   lighten(lightenAmount, BACKGROUND_COLOR);
 
@@ -35,7 +29,7 @@ export const Empty = styled(Default)`
   background-color: ${getCellBackgroundColor(.1)};
 `;
 
-export const Hidden = styled(Default)<HiddenCellProps>`
+export const Hidden = styled(Default)<Pick<Cell, 'highlighted'>>`
   ${({
     highlighted,
   }) => {
@@ -47,7 +41,7 @@ export const Hidden = styled(Default)<HiddenCellProps>`
   }}
 `;
 
-export const Mined = styled(Default)<MinedCellProps>`
+export const Mined = styled(Default)<Pick<Cell, 'busted' | 'wrong'>>`
   background-color: ${getCellBackgroundColor(.1)};
 
   ${({
@@ -111,7 +105,7 @@ const getValueColor = (value: number) => {
   }
 };
 
-export const Opened = styled(Default)<OpenedCellProps>`
+export const Opened = styled(Default)<Pick<Cell, 'value'>>`
   background-color: ${getCellBackgroundColor(.1)};
 
   ${({

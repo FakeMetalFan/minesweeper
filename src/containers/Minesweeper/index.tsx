@@ -1,3 +1,5 @@
+import CellHandlers from 'contexts/cell-handlers';
+
 import useMinesweeper from 'hooks/use-minesweeper';
 import useCellHandlers from 'hooks/use-cell-handlers';
 import useEventHandler from 'hooks/use-event-handler';
@@ -28,12 +30,15 @@ export default () => {
         status={status}
         onReset={reset}
       />
-      <MineField
-        field={field}
-        settings={settings}
-        status={status}
-        cellHandlers={useCellHandlers(minesweeper)}
-      />
+      <CellHandlers.Provider
+        value={useCellHandlers(minesweeper)}
+      >
+        <MineField
+          field={field}
+          settings={settings}
+          status={status}
+        />
+      </CellHandlers.Provider>
       <Settings
         settings={settings}
         onChange={changeSettings}

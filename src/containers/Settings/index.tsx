@@ -23,7 +23,7 @@ export default memo(({
     items={SETTINGS}
     Styles={Group}
     renderRadioButton={
-      (item: Settings) => {
+      (item) => {
         const {
           label,
         } = item;

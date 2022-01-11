@@ -1,5 +1,6 @@
 import {
-  useCallback,
+  MouseEvent as ReactMouseEvent,
+  useMemo,
 } from 'react';
 
 import MOUSE_BUTTON from 'constants/mouse-button';
@@ -16,22 +17,22 @@ const canHandleNeighbors = (prev: MOUSE_BUTTON, next: MOUSE_BUTTON) => {
 };
 
 export default (minesweeper: ReturnType<typeof useMinesweeper>) => {
-  const openCell = useCallback((index, event) => {
+  const openCell = (index: number, event: ReactMouseEvent) => {
     if (event.button === MOUSE_BUTTON.LEFT) {
       minesweeper.openCell(index);
     }
-  }, []);
+  };
 
-  const toggleMark = useCallback((index, event) => {
+  const toggleMark = (index: number, event: ReactMouseEvent) => {
     if (event.button === MOUSE_BUTTON.RIGHT) {
       minesweeper.toggleMark(index);
     }
-  }, []);
+  };
 
-  const handleNeighbors = useCallback((index, {
+  const handleNeighbors = (index: number, {
     button,
     target,
-  }) => {
+  }: ReactMouseEvent) => {
     const handleMouseDown = (event: Event) => {
       if (canHandleNeighbors(button, (event as MouseEvent).button)) {
         minesweeper.highlightNeighbors(index);
@@ -51,12 +52,12 @@ export default (minesweeper: ReturnType<typeof useMinesweeper>) => {
 
     target.addEventListener('mousedown', handleMouseDown);
     target.addEventListener('mouseup', handleMouseUp);
-  }, []);
+  };
 
-  return {
+  return useMemo(() => ({
     openCell,
     toggleMark,
     handleNeighbors,
     stopHighlightingNeighbors: minesweeper.stopHighlightingNeighbors,
-  };
+  }), []);
 };

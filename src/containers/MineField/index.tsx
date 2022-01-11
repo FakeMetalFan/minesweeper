@@ -1,17 +1,12 @@
 import Field from 'components/Field';
 
-import useCellHandlers from 'hooks/use-cell-handlers';
-
 import CellFactory from '../CellFactory';
 
 export default ({
   field,
   settings,
   status,
-  cellHandlers,
-}: Minesweeper & {
-  cellHandlers: ReturnType<typeof useCellHandlers>;
-}) => {
+}: Minesweeper) => {
   const {
     width,
     height,
@@ -30,10 +25,9 @@ export default ({
       cellSize={24}
       disabled={solved || busted}
       renderCell={
-        (cell: Cell, index: number) => (
+        (cell, index) => (
           <CellFactory
             {...cell}
-            {...cellHandlers}
             index={index}
             key={cell.id}
           />

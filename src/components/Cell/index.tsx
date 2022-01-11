@@ -1,9 +1,9 @@
 import {
-  FontAwesomeIcon
+  FontAwesomeIcon,
 } from '@fortawesome/react-fontawesome';
 
 import {
-  MouseEvent,
+  MouseEventHandler,
   PropsWithChildren,
 } from 'react';
 
@@ -15,23 +15,16 @@ import {
   Opened,
 } from './styles';
 
-export type MouseEventHandler = (index: number, event: MouseEvent) => void;
-
-export type Props = {
-  index: number;
+type Props = {
   Styles?: typeof Default;
-};
-
-export type PropsWithHandlers = Props & {
   onMouseDown?: MouseEventHandler;
   onMouseLeave?: MouseEventHandler;
   onMouseUp?: MouseEventHandler;
 };
 
-const Cell = (props: PropsWithChildren<PropsWithHandlers>) => {
+const Cell = (props: PropsWithChildren<Props>) => {
   const {
     onMouseDown,
-    index,
     onMouseLeave,
     onMouseUp,
     Styles = Default,
@@ -41,44 +34,29 @@ const Cell = (props: PropsWithChildren<PropsWithHandlers>) => {
   return (
     <Styles
       {...props}
-      onMouseDown={
-        onMouseDown && ((event) => {
-          onMouseDown?.(index, event);
-        })
-      }
-      onMouseLeave={
-        onMouseLeave && ((event) => {
-          onMouseLeave?.(index, event);
-        })
-      }
-      onMouseUp={
-        onMouseUp && ((event) => {
-          onMouseUp?.(index, event);
-        })
-      }
+      onMouseDown={onMouseDown}
+      onMouseLeave={onMouseLeave}
+      onMouseUp={onMouseUp}
     >
       {children}
     </Styles>
   );
 };
 
-export const EmptyCell = (props: Props) => (
+export const EmptyCell = () => (
   <Cell
-    {...props}
     Styles={Empty}
   />
 );
 
-export type HiddenCellProps = PropsWithHandlers & Pick<Cell, 'highlighted'>;
-
-export const HiddenCell = (props: HiddenCellProps) => (
+export const HiddenCell = (props: Props & Pick<Cell, 'highlighted'>) => (
   <Cell
     {...props}
     Styles={Hidden}
   />
 );
 
-export const MarkedCell = (props: PropsWithHandlers & Pick<Cell, 'marked'>) => (
+export const MarkedCell = (props: Props & Pick<Cell, 'marked'>) => (
   <Cell
     {...props}
   >
@@ -93,9 +71,7 @@ export const MarkedCell = (props: PropsWithHandlers & Pick<Cell, 'marked'>) => (
   </Cell>
 );
 
-export type MinedCellProps = Props & Pick<Cell, 'wrong' | 'busted'>;
-
-export const MinedCell = (props: MinedCellProps) => (
+export const MinedCell = (props: Pick<Cell, 'wrong' | 'busted'>) => (
   <Cell
     {...props}
     Styles={Mined}
@@ -111,9 +87,7 @@ export const MinedCell = (props: MinedCellProps) => (
   </Cell>
 );
 
-export type OpenedCellProps = PropsWithHandlers & Pick<Cell, 'value'>;
-
-export const OpenedCell = (props: OpenedCellProps) => (
+export const OpenedCell = (props: Props & Pick<Cell, 'value'>) => (
   <Cell
     {...props}
     Styles={Opened}
