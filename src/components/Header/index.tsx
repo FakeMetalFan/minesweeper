@@ -9,7 +9,7 @@ import {
 
 export default () => (
   <Header>
-    Tetris
+    Minesweeper
     <Link
       href="https://github.com/FakeMetalFan/minesweeper"
       target="_blank"
