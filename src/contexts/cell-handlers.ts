@@ -8,5 +8,4 @@ export default createContext<ReturnType<typeof useCellHandlers>>({
   openCell: () => {},
   toggleMark: () => {},
   handleNeighbors: () => {},
-  stopHighlightingNeighbors: () => {},
 });

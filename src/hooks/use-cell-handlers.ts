@@ -41,6 +41,16 @@ export default (minesweeper: ReturnType<typeof useMinesweeper>) => {
       target.removeEventListener('mousedown', handleMouseDown);
     };
 
+    const handleMouseLeave = (event: Event) => {
+      if (canHandleNeighbors(button, (event as MouseEvent).button)) {
+        minesweeper.stopHighlightingNeighbors(index);
+      }
+
+      target.removeEventListener('mousedown', handleMouseDown);
+      target.removeEventListener('mouseleave', handleMouseLeave);
+      target.removeEventListener('mouseup', handleMouseUp);
+    };
+
     const handleMouseUp = (event: Event) => {
       if (canHandleNeighbors(button, (event as MouseEvent).button)) {
         minesweeper.openNeighbors(index);
@@ -51,6 +61,7 @@ export default (minesweeper: ReturnType<typeof useMinesweeper>) => {
     };
 
     target.addEventListener('mousedown', handleMouseDown);
+    target.addEventListener('mouseleave', handleMouseLeave);
     target.addEventListener('mouseup', handleMouseUp);
   };
 
@@ -58,6 +69,5 @@ export default (minesweeper: ReturnType<typeof useMinesweeper>) => {
     openCell,
     toggleMark,
     handleNeighbors,
-    stopHighlightingNeighbors: minesweeper.stopHighlightingNeighbors,
   }), []);
 };

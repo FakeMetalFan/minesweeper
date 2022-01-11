@@ -20,10 +20,10 @@ type Settings = {
 };
 
 type Status = {
-  hiddenMines: number;
-  init: boolean;
-  solved: boolean;
   busted: boolean;
+  init: boolean;
+  hiddenMines: number;
+  solved: boolean;
 };
 
 type Minesweeper = {

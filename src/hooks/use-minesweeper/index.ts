@@ -58,7 +58,7 @@ export default () => {
         return stateProducers.bustNeighbors(index, neighborsUtils, prev);
       }
 
-      return prev;
+      return stateProducers.stopHighlightingNeighbors(index, prev);
     });
   };
 

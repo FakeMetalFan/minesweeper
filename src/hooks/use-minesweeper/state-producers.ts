@@ -247,10 +247,13 @@ const open = (
   )(state);
 
 const reset = (state: Minesweeper) =>
-  produce(state, (draft) => {
-    draft.status = initState(draft.settings).status;
-
-    each(draft.field, (cell) => {
+  produce(state, ({
+    status,
+    settings,
+    field,
+  }) => {
+    assign(status, initState(settings).status);
+    each(field, (cell) => {
       assign(cell, INITIAL_CELL_STATE);
     });
   });

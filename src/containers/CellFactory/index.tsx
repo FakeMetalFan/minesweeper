@@ -32,10 +32,6 @@ export default memo(({
     cellHandlers.toggleMark(index, event);
   };
 
-  const stopHighlightingNeighbors = () => {
-    cellHandlers.stopHighlightingNeighbors(index);
-  };
-
   if ((mined && visible) || busted || wrong) {
     return (
       <MinedCell
@@ -59,9 +55,11 @@ export default memo(({
       <HiddenCell
         highlighted={highlighted}
         onMouseDown={toggleMark}
-        onMouseUp={(event) => {
-          cellHandlers.openCell(index, event);
-        }}
+        onMouseUp={
+          (event) => {
+            cellHandlers.openCell(index, event);
+          }
+        }
       />
     );
   }
@@ -73,11 +71,11 @@ export default memo(({
   return (
     <OpenedCell
       value={value}
-      onMouseDown={(event) => {
-        cellHandlers.handleNeighbors(index, event);
-      }}
-      onMouseLeave={stopHighlightingNeighbors}
-      onMouseUp={stopHighlightingNeighbors}
+      onMouseDown={
+        (event) => {
+          cellHandlers.handleNeighbors(index, event);
+        }
+      }
     />
   );
 });

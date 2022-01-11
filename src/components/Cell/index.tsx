@@ -18,14 +18,12 @@ import {
 type Props = {
   Styles?: typeof Default;
   onMouseDown?: MouseEventHandler;
-  onMouseLeave?: MouseEventHandler;
   onMouseUp?: MouseEventHandler;
 };
 
 const Cell = (props: PropsWithChildren<Props>) => {
   const {
     onMouseDown,
-    onMouseLeave,
     onMouseUp,
     Styles = Default,
     children,
@@ -35,7 +33,6 @@ const Cell = (props: PropsWithChildren<Props>) => {
     <Styles
       {...props}
       onMouseDown={onMouseDown}
-      onMouseLeave={onMouseLeave}
       onMouseUp={onMouseUp}
     >
       {children}
