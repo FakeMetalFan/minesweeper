@@ -20,19 +20,20 @@ const RadioButton = <I,>({
   checked?: boolean;
   Styles?: StyledComponent<any, any>;
   onChange?: (item: I) => void;
-}) => createElement(
-  Styles ?? Fragment,
-  null,
-  <input
-    type='radio'
-    checked={checked}
-    onChange={
-      onChange && (() => {
-        onChange?.(item);
-      })
-    }
-  />,
-  label,
-);
+}) =>
+  createElement(
+    Styles ?? Fragment,
+    null,
+    <input
+      type='radio'
+      checked={checked}
+      onChange={
+        onChange && (() => {
+          onChange?.(item);
+        })
+      }
+    />,
+    label,
+  );
 
 export default memo(RadioButton) as typeof RadioButton;
