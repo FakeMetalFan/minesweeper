@@ -1,4 +1,4 @@
-type Unique<T extends Record<string, unknown>> = T & {
+type Unique<O extends Record<string, unknown>> = O & {
   id: string;
 };
 
