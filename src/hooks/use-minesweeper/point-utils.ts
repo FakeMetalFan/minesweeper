@@ -24,7 +24,7 @@ export const reducePoints = (...points: Point[]) =>
 export default class {
   constructor(private width: number, private height: number) {}
 
-  convert = (index: number) => {
+  toPoint = (index: number) => {
     const x = index % this.width;
 
     return {

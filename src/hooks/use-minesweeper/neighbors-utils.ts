@@ -25,7 +25,7 @@ export default class {
   }
 
   getIndexes = (index: number) => {
-    const point = this.pointUtils.convert(index);
+    const point = this.pointUtils.toPoint(index);
     const indexes = [];
 
     for (let x = -1; x < 2; ++x) {
