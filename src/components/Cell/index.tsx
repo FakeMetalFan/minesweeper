@@ -8,15 +8,13 @@ import {
 } from 'react';
 
 import {
-  Default,
-  Empty,
-  Hidden,
-  Mined,
-  Opened,
-} from './styles';
+  StyledComponent,
+} from 'styled-components';
+
+import * as Styles from './styles';
 
 type Props = {
-  Styles?: typeof Default;
+  Styles?: StyledComponent<any, any>;
   onMouseDown?: MouseEventHandler;
   onMouseUp?: MouseEventHandler;
 };
@@ -25,31 +23,31 @@ const Cell = (props: PropsWithChildren<Props>) => {
   const {
     onMouseDown,
     onMouseUp,
-    Styles = Default,
+    Styles: Cell = Styles.Default,
     children,
   } = props;
 
   return (
-    <Styles
+    <Cell
       {...props}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
     >
       {children}
-    </Styles>
+    </Cell>
   );
 };
 
 export const EmptyCell = () => (
   <Cell
-    Styles={Empty}
+    Styles={Styles.Empty}
   />
 );
 
 export const HiddenCell = (props: Props & Pick<Cell, 'highlighted'>) => (
   <Cell
     {...props}
-    Styles={Hidden}
+    Styles={Styles.Hidden}
   />
 );
 
@@ -71,7 +69,7 @@ export const MarkedCell = (props: Props & Pick<Cell, 'marked'>) => (
 export const MinedCell = (props: Pick<Cell, 'wrong' | 'busted'>) => (
   <Cell
     {...props}
-    Styles={Mined}
+    Styles={Styles.Mined}
   >
     <FontAwesomeIcon
       icon={
@@ -87,7 +85,7 @@ export const MinedCell = (props: Pick<Cell, 'wrong' | 'busted'>) => (
 export const OpenedCell = (props: Props & Pick<Cell, 'value'>) => (
   <Cell
     {...props}
-    Styles={Opened}
+    Styles={Styles.Opened}
   >
     {props.value}
   </Cell>

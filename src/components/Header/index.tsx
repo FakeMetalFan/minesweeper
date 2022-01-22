@@ -2,15 +2,12 @@ import {
   FontAwesomeIcon,
 } from '@fortawesome/react-fontawesome';
 
-import {
-  Header,
-  Link,
-} from './styles';
+import * as Styles from './styles';
 
 export default () => (
-  <Header>
+  <Styles.Header>
     Minesweeper
-    <Link
+    <Styles.Link
       href="https://github.com/FakeMetalFan/minesweeper"
       target="_blank"
       rel="noopener noreferrer"
@@ -23,6 +20,6 @@ export default () => (
           ]
         }
       />
-    </Link>
-  </Header>
+    </Styles.Link>
+  </Styles.Header>
 );

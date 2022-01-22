@@ -2,16 +2,13 @@ import {
   FontAwesomeIcon,
 } from '@fortawesome/react-fontawesome';
 
-import {
-  Footer,
-  Link,
-} from './styles';
+import * as Styles from './styles';
 
 export default () => (
-  <Footer>
+  <Styles.Footer>
     <span>
       Powered by
-      <Link
+      <Styles.Link
         href="https://github.com/FakeMetalFan"
         target="_blank"
         rel="noopener noreferrer"
@@ -24,11 +21,11 @@ export default () => (
             ]
           }
         />
-      </Link>
+      </Styles.Link>
       &copy;
       <span>
         {new Date().getFullYear()}
       </span>
     </span>
-  </Footer>
+  </Styles.Footer>
 );

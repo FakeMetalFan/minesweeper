@@ -7,10 +7,7 @@ import RadioGroup from 'components/RadioGroup';
 
 import SETTINGS from 'constants/settings';
 
-import {
-  Group,
-  Radio,
-} from './styles';
+import * as Styles from './styles';
 
 export default memo(({
   settings,
@@ -21,7 +18,7 @@ export default memo(({
 }) => (
   <RadioGroup
     items={SETTINGS}
-    Styles={Group}
+    Styles={Styles.Group}
     renderRadioButton={
       (item) => {
         const {
@@ -33,7 +30,7 @@ export default memo(({
             item={item}
             label={label}
             checked={label === settings.label}
-            Styles={Radio}
+            Styles={Styles.Radio}
             onChange={onChange}
             key={label}
           />
