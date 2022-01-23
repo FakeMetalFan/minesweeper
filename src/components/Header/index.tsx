@@ -8,9 +8,9 @@ export default () => (
   <Styles.Header>
     Minesweeper
     <Styles.Link
-      href="https://github.com/FakeMetalFan/minesweeper"
-      target="_blank"
-      rel="noopener noreferrer"
+      href='https://github.com/FakeMetalFan/minesweeper'
+      target='_blank'
+      rel='noopener noreferrer'
     >
       <FontAwesomeIcon
         icon={

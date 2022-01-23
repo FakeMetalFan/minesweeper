@@ -9,9 +9,9 @@ export default () => (
     <span>
       Powered by
       <Styles.Link
-        href="https://github.com/FakeMetalFan"
-        target="_blank"
-        rel="noopener noreferrer"
+        href='https://github.com/FakeMetalFan'
+        target='_blank'
+        rel='noopener noreferrer'
       >
         <FontAwesomeIcon
           icon={
