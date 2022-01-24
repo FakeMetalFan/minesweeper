@@ -71,6 +71,7 @@ export default class {
   private countBy = (index: number, state: Minesweeper, key: keyof Cell) =>
     reduce(
       this.getIndexes(index),
-      (acc, x) => state.field[x][key] ? acc + 1 : acc, 0,
+      (acc, x) => state.field[x][key] ? acc + 1 : acc,
+      0,
     );
 }

@@ -8,18 +8,22 @@ type Point = {
 };
 
 export const reducePoints = (...points: Point[]) =>
-  reduce(points, (acc, {
-    x,
-    y,
-  }) => {
-    acc.x += x;
-    acc.y += y;
+  reduce(
+    points,
+    (acc, {
+      x,
+      y,
+    }) => {
+      acc.x += x;
+      acc.y += y;
 
-    return acc;
-  }, {
-    x: 0,
-    y: 0,
-  });
+      return acc;
+    },
+    {
+      x: 0,
+      y: 0,
+    },
+  );
 
 export default class {
   constructor(private width: number, private height: number) {}
