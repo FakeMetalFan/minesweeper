@@ -11,14 +11,14 @@ import {
   StyledComponent,
 } from 'styled-components';
 
-export default <I,>({
+export default <T,>({
   items,
   Styles,
   renderRadioButton,
 }: {
-  items: I[];
+  items: T[];
   Styles?: StyledComponent<any, any>;
-  renderRadioButton: (item: I) => JSX.Element;
+  renderRadioButton: (item: T) => JSX.Element;
 }) =>
   createElement(
     Styles ?? Fragment,

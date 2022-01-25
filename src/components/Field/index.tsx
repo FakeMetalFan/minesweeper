@@ -4,16 +4,16 @@ import {
 
 import Styles from './styles';
 
-export type Props<C> = {
-  field: C[];
+export type Props<T> = {
+  field: T[];
   width: number;
   height: number;
   cellSize: number;
   disabled?: boolean;
-  renderCell: (cell: C, index: number) => JSX.Element;
+  renderCell: (cell: T, index: number) => JSX.Element;
 };
 
-export default <C,>(props: Props<C>) => {
+export default <T,>(props: Props<T>) => {
   const {
     field,
     renderCell,

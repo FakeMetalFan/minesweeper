@@ -2,7 +2,7 @@ import {
   uniqueId,
 } from 'lodash-es';
 
-export default <O extends Record<string, unknown>>(obj: O) => ({
+export default <T extends Record<string, unknown>>(obj: T) => ({
   ...obj,
   id: uniqueId(),
 });

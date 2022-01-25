@@ -62,9 +62,9 @@ const revealMines = (state: Minesweeper) =>
     });
   });
 
-const setStatusValue = <K extends keyof Status>(
-  key: K,
-  value: Status[K],
+const setStatusValue = <T extends keyof Status>(
+  key: T,
+  value: Status[T],
   state: Minesweeper,
 ) =>
   produce(state, (draft) => {

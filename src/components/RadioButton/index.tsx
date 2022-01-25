@@ -8,18 +8,18 @@ import {
   StyledComponent,
 } from 'styled-components';
 
-const RadioButton = <I,>({
+const RadioButton = <T,>({
   item,
   label,
   checked,
   Styles,
   onChange,
 }: {
-  item: I;
+  item: T;
   label: string;
   checked?: boolean;
   Styles?: StyledComponent<any, any>;
-  onChange?: (item: I) => void;
+  onChange?: (item: T) => void;
 }) =>
   createElement(
     Styles ?? Fragment,
