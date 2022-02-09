@@ -145,16 +145,11 @@ const floodFill = (index: number, {
     floodFillNeighbors(index);
   });
 
-const checkSolve = (state: Minesweeper) => {
-  if (solved(state)) {
-    return flow(
-      markMines,
-      partial(setStatusValue, 'solved', true),
-    )(state);
-  }
-
-  return state;
-};
+const checkSolve = (state: Minesweeper) =>
+  solved(state) ? flow(
+    markMines,
+    partial(setStatusValue, 'solved', true),
+  )(state) : state;
 
 const plantMines = (index: number, {
   excludeIndexes,
