@@ -101,7 +101,7 @@ const reducer = (state: Minesweeper, action: Action) => {
     case ActionType.Reset:
       return stateProducers.reset(state);
     default:
-      throw 'Appropriate action must be implemented';
+      throw 'Appropriate action must be dispatched';
   }
 };
 
