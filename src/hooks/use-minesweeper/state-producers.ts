@@ -10,8 +10,6 @@ import {
   toArray,
 } from 'lodash-es';
 
-import SETTINGS from 'constants/settings';
-
 import makeUnique from 'utils/make-unique';
 
 import {
@@ -223,13 +221,13 @@ const highlightNeighbors = (index: number, state: Minesweeper) =>
     });
   });
 
-const initState = (settings = SETTINGS[0]) => ({
+const initState = (settings: Settings) => ({
   settings,
   field: initField(settings),
   status: initStatus(settings),
 });
 
-const open = (
+const openCell = (
   index: number,
   neighborsUtils: NeighborsUtils,
   state: Minesweeper,
@@ -294,7 +292,7 @@ export default {
   changeSettings,
   highlightNeighbors,
   initState,
-  open,
+  openCell,
   reset,
   setupField,
   stopHighlightingNeighbors,

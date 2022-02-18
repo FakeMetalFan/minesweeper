@@ -1,10 +1,12 @@
+export const DEFAULT_SETTINGS = {
+  label: 'Easy',
+  width: 9,
+  height: 9,
+  mines: 10,
+};
+
 export default [
-  {
-    label: 'Easy',
-    width: 9,
-    height: 9,
-    mines: 10,
-  },
+  DEFAULT_SETTINGS,
   {
     label: 'Medium',
     width: 16,

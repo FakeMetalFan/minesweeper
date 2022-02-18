@@ -1,3 +1,7 @@
+import {
+  DEFAULT_SETTINGS,
+} from 'constants/settings';
+
 import CellHandlers from 'contexts/cell-handlers';
 
 import useMinesweeper from 'hooks/use-minesweeper';
@@ -9,7 +13,7 @@ import MineField from '../MineField';
 import Settings from '../Settings';
 
 export default () => {
-  const minesweeper = useMinesweeper();
+  const minesweeper = useMinesweeper(DEFAULT_SETTINGS);
 
   const {
     settings,
